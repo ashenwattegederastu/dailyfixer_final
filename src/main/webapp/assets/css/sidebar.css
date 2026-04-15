@@ -1,0 +1,197 @@
+/* Fix HTML/Body height for dashboard */
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background);
+}
+
+/* Unified Sidebar styles */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 260px;
+    background: var(--card);
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-md);
+    z-index: 1000;
+    border-right: 1px solid var(--border);
+    padding: 0 !important;
+    /* Override framework.css 96px top padding */
+    height: 100%;
+}
+
+.sidebar-header {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.sidebar-header .logo {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 4px;
+}
+
+.sidebar-header .panel-name {
+    font-size: 0.8em;
+    font-weight: 600;
+    color: var(--muted-foreground);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 0;
+    min-height: 0;
+    /* CRITICAL: Allows flex child to shrink and scroll properly */
+}
+
+.sidebar-nav h3 {
+    padding: 0 20px;
+    margin-bottom: 15px;
+    font-size: 0.85em;
+    color: var(--muted-foreground);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-nav ul li {
+    margin-bottom: 5px;
+}
+
+.sidebar-nav ul li a {
+    display: flex;
+    padding: 12px 20px;
+    color: var(--foreground);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+    gap: 10px;
+}
+
+/* Icon sizing */
+.sidebar-nav ul li a i.ph {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.sidebar-nav ul li a:hover {
+    background: var(--accent);
+    border-left-color: var(--primary);
+}
+
+.sidebar-nav ul li a.active {
+    background: var(--accent);
+    border-left-color: var(--primary);
+    font-weight: 600;
+}
+
+.sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid var(--border);
+    background: var(--card);
+    flex-shrink: 0;
+}
+
+.user-profile-widget {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.1em;
+    flex-shrink: 0;
+}
+
+.user-info {
+    overflow: hidden;
+}
+
+.user-name {
+    font-weight: 600;
+    color: var(--foreground);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.95em;
+    line-height: 1.2;
+}
+
+.user-handle {
+    font-size: 0.8em;
+    color: var(--muted-foreground);
+    margin-top: 2px;
+}
+
+.sidebar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.action-btn {
+    width: 100%;
+    padding: 10px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--foreground);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    text-decoration: none;
+    font-size: 0.9em;
+    display: block;
+    box-sizing: border-box;
+}
+
+.action-btn:hover {
+    background: var(--accent);
+}
+
+.logout-btn {
+    background: #fef2f2;
+    color: #dc2626;
+    border-color: #fca5a5;
+}
+
+.logout-btn:hover {
+    background: #fee2e2;
+}
+/* Override old dashboard layout container */
+.dashboard-container {
+    margin-left: 260px !important;
+    margin-top: 0 !important;
+    padding: 30px;
+    background-color: transparent !important;
+    min-height: 100vh;
+}

@@ -1,0 +1,592 @@
+/* Page-specific styles for booking-calendar.jsp */
+
+/* ─── Page Header & View Toggle ─────────────────────────────────────────── */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.page-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0;
+}
+
+.view-toggle {
+    display: flex;
+    background: var(--muted);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.view-toggle button {
+    padding: 0.6rem 1.25rem;
+    border: none;
+    background: transparent;
+    color: var(--muted-foreground);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-sans);
+}
+
+.view-toggle button.active {
+    background: var(--primary);
+    color: var(--primary-foreground);
+}
+
+.view-toggle button:not(.active):hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+}
+
+/* ─── Alert Banners ──────────────────────────────────────────────────────── */
+.alert-banner {
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.alert-banner.success { background: oklch(0.6290 0.1902 156.4499); color: white; }
+.alert-banner.warning { background: oklch(0.7336 0.1758 50.5517);  color: white; }
+
+/* ─── Empty State ────────────────────────────────────────────────────────── */
+.empty-state-card {
+    text-align: center;
+    padding: 3rem;
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+}
+
+.empty-state-card p {
+    font-size: 1.125rem;
+    color: var(--muted-foreground);
+}
+
+/* ─── Booking Cards (List View) ──────────────────────────────────────────── */
+.booking-list { display: grid; gap: 1.5rem; }
+
+.booking-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.booking-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.booking-card-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.booking-card-header h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
+.booking-card-header p  { color: var(--muted-foreground); margin-bottom: 0.25rem; }
+
+/* ─── Status Badges ──────────────────────────────────────────────────────── */
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+    height: fit-content;
+}
+
+.status-badge.accepted           { background: oklch(0.6290 0.1902 156.4499); color: white; }
+.status-badge.awaiting           { background: var(--primary); color: var(--primary-foreground); }
+.status-badge.in-progress        { background: oklch(0.55 0.15 250); color: white; }
+.status-badge.reschedule-pending { background: oklch(0.75 0.17 75); color: white; }
+.status-badge.no-show            { background: var(--destructive); color: var(--destructive-foreground); }
+.status-badge.client-no-show     { background: #fce7f3; color: #9d174d; }
+
+/* ─── Info Blocks ────────────────────────────────────────────────────────── */
+.info-block {
+    background: var(--muted);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
+}
+
+.info-block .label { font-weight: 600; margin-bottom: 0.5rem; }
+.info-block p      { color: var(--muted-foreground); }
+
+/* ─── Action Buttons (shared base) ──────────────────────────────────────── */
+.btn-chat,
+.btn-complete,
+.btn-cancel-booking,
+.btn-start-job,
+.btn-client-no-show,
+.btn-reschedule-req {
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: var(--font-sans);
+    transition: all 0.2s ease;
+    text-align: center;
+    display: inline-block;
+}
+
+.btn-chat:hover,
+.btn-complete:hover,
+.btn-cancel-booking:hover,
+.btn-start-job:hover,
+.btn-client-no-show:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.btn-chat           { background: var(--primary); color: var(--primary-foreground); }
+.btn-complete       { background: oklch(0.6290 0.1902 156.4499); color: white; }
+.btn-cancel-booking { background: var(--destructive); color: var(--destructive-foreground); }
+.btn-start-job      { background: oklch(0.55 0.15 250); color: white; }
+.btn-client-no-show { background: #9d174d; color: white; }
+.btn-reschedule-req { background: var(--secondary); color: var(--secondary-foreground); border: 1px solid var(--border); }
+
+/* ─── Booking Actions Container ──────────────────────────────────────────── */
+.booking-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.booking-actions > * {
+    flex: 1;
+    min-width: 150px;
+    width: 100%;
+}
+
+/* ─── Modal Actions Container ────────────────────────────────────────────── */
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.25rem;
+}
+
+.modal-actions > * { flex: 1; }
+
+.modal-subtitle {
+    color: var(--muted-foreground);
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+}
+
+/* ─── Calendar Controls ──────────────────────────────────────────────────── */
+.calendar-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.calendar-nav { display: flex; align-items: center; gap: 0.75rem; }
+
+.calendar-nav button {
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.5rem 0.9rem;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    font-family: var(--font-sans);
+}
+
+.calendar-nav button:hover { background: var(--accent); color: var(--accent-foreground); }
+
+.calendar-month-label {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--foreground);
+    min-width: 200px;
+    text-align: center;
+}
+
+.btn-today {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    font-family: var(--font-sans);
+}
+
+.btn-today:hover { opacity: 0.9; }
+
+/* ─── Calendar Grid ──────────────────────────────────────────────────────── */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    gap: 1px;
+}
+
+.cal-day-header {
+    background: var(--muted);
+    padding: 0.6rem 0.5rem;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.cal-day {
+    background: var(--card);
+    min-height: 110px;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    transition: background-color 0.2s ease;
+}
+
+.cal-day:hover       { background: var(--accent); }
+.cal-day.other-month { opacity: 0.35; }
+.cal-day.today {
+    background: oklch(0.6290 0.1902 156.4499 / 0.08);
+    box-shadow: inset 0 0 0 2px oklch(0.6290 0.1902 156.4499 / 0.3);
+}
+
+.cal-day-number { font-weight: 700; font-size: 0.85rem; color: var(--muted-foreground); margin-bottom: 0.35rem; }
+.cal-day.today .cal-day-number { color: oklch(0.6290 0.1902 156.4499); }
+
+/* ─── Calendar Booking Pills ─────────────────────────────────────────────── */
+.cal-booking-pill {
+    display: block;
+    padding: 0.2rem 0.4rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: opacity 0.15s ease;
+}
+
+.cal-booking-pill:hover              { opacity: 0.85; }
+.cal-booking-pill.accepted           { background: oklch(0.6290 0.1902 156.4499); color: white; }
+.cal-booking-pill.awaiting           { background: var(--primary); color: var(--primary-foreground); }
+.cal-booking-pill.in-progress        { background: oklch(0.55 0.15 250); color: white; }
+.cal-booking-pill.reschedule-pending { background: oklch(0.75 0.17 75); color: white; }
+.cal-booking-pill.no-show            { background: var(--destructive); color: var(--destructive-foreground); }
+.cal-booking-pill.client-no-show     { background: #9d174d; color: white; }
+
+/* ─── Modals ──────────────────────────────────────────────────────────────── */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+}
+
+.modal-content {
+    background: var(--card);
+    padding: 2rem;
+    border-radius: var(--radius);
+    max-width: 560px;
+    width: 90%;
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--border);
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modalSlideIn 0.2s ease;
+}
+
+@keyframes modalSlideIn {
+    from { transform: translateY(16px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+.modal-content h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--foreground);
+}
+
+/* ─── Penalty Review Section ──────────────────────────────────────────────── */
+.penalty-review-section {
+    background: var(--card);
+    border: 1px solid #fca5a5;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.penalty-review-section > h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #991b1b;
+    margin: 0 0 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.penalty-review-section > p {
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.penalty-review-card {
+    background: #fff1f2;
+    border: 1px solid #fca5a5;
+    border-radius: var(--radius-md);
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.penalty-review-card:last-child      { margin-bottom: 0; }
+.penalty-review-info                 { flex: 1; min-width: 200px; }
+.penalty-review-info strong          { color: var(--foreground); font-size: 0.95rem; }
+.penalty-review-info small           { color: var(--muted-foreground); font-size: 0.82rem; display: block; margin-top: 2px; }
+.penalty-review-actions              { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.btn-confirm-paid {
+    padding: 7px 14px;
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.btn-dispute-paid {
+    padding: 7px 14px;
+    background: var(--destructive);
+    color: var(--destructive-foreground);
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.btn-view-proof {
+    padding: 7px 14px;
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* ─── Recurring Contract Cards ────────────────────────────────────────────── */
+.recurring-contract-card { border-left: 4px solid var(--primary); }
+
+.recurring-badge {
+    display: inline-block;
+    padding: 0.18rem 0.55rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: var(--primary);
+    color: var(--primary-foreground);
+    margin-left: 0.4rem;
+    vertical-align: middle;
+}
+
+.months-toggle-btn {
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    font-family: var(--font-sans);
+    margin-top: 0.5rem;
+    display: inline-block;
+}
+
+.months-list {
+    display: none;
+    margin-top: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.months-list table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.months-list th    { background: var(--muted); padding: 0.5rem 0.75rem; text-align: left; font-weight: 600; color: var(--muted-foreground); font-size: 0.8rem; }
+.months-list td    { padding: 0.5rem 0.75rem; border-top: 1px solid var(--border); color: var(--foreground); }
+.months-list tr:hover td { background: var(--accent); }
+
+/* ─── Reschedule Info Chips ───────────────────────────────────────────────── */
+.reschedule-info-chip {
+    flex: 2;
+    background: #fef3c7;
+    color: #92400e;
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.reschedule-request-chip {
+    flex: 2;
+    background: var(--muted);
+    padding: 0.6rem 0.9rem;
+    border-radius: var(--radius-md);
+    font-size: 0.82rem;
+}
+
+/* ─── Modal Form Utilities ────────────────────────────────────────────────── */
+.modal-form-group { margin-bottom: 1rem; }
+
+.modal-form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--foreground);
+}
+
+.modal-form-group .field-hint {
+    font-size: 0.82rem;
+    color: var(--muted-foreground);
+    margin: 0 0 0.5rem;
+}
+
+.modal-form-group input,
+.modal-form-group textarea,
+.modal-form-group select {
+    width: 100%;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--input);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+}
+
+.modal-form-group textarea { resize: vertical; }
+
+.field-error {
+    color: #dc2626;
+    font-size: 0.8em;
+    margin-top: 0.3rem;
+    display: none;
+}
+
+.modal-close-btn {
+    flex: 1;
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--font-sans);
+}
+
+.btn-no-show-confirm {
+    flex: 1;
+    background: #9d174d;
+    color: white;
+    padding: 0.75rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    cursor: pointer;
+    font-family: var(--font-sans);
+}
+
+.modal-content--narrow { max-width: 460px; }
+
+.modal-danger-title { color: #9d174d; }
+
+/* status badge variant for TECHNICIAN_COMPLETED */
+.status-badge.tech-completed { background: #e0e7ff; color: #3730a3; }
+
+/* Detail modal close footer */
+.modal-footer-right { margin-top: 1rem; text-align: right; }
+
+/* Map link */
+.map-link {
+    color: var(--primary);
+    text-decoration: underline;
+    display: none;
+    margin-top: 0.25rem;
+}
+
+.map-link.visible { display: inline-block; }
+
+/* JS-rendered action wrappers */
+.action-form     { flex: 1; min-width: 150px; }
+.action-form-sm  { flex: 1; min-width: 110px; }
+
+/* Disabled button state */
+.btn-disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* Small button variant (table rows) */
+.btn-sm { padding: 0.25rem 0.6rem; font-size: 0.75rem; min-width: auto; flex: none; }
+
+/* Full-width button modifier */
+.btn-full { width: 100%; }
+
+/* ─── Penalty review subtitle ────────────────────────────────────────────── */
+.penalty-subtitle {
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+    margin: -0.5rem 0 1rem;
+}
+
+/* ─── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .cal-day              { min-height: 70px; padding: 0.3rem; }
+    .cal-booking-pill     { font-size: 0.6rem; }
+    .cal-day-number       { font-size: 0.75rem; }
+    .calendar-month-label { font-size: 1rem; min-width: auto; }
+}

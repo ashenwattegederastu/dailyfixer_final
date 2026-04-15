@@ -1,0 +1,368 @@
+/* Store Dashboard Form Styles */
+
+/* Form card container (centered) */
+.container.form-layout {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.form-card {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.form-card h2 {
+  color: var(--primary);
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 1.5em;
+}
+
+.form-card label {
+  display: block;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+.form-card input,
+.form-card select,
+.form-card textarea {
+  width: 100%;
+  padding: 10px 15px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  background-color: var(--input);
+  color: var(--foreground);
+  transition: border-color 0.2s, background-color 0.3s ease, color 0.3s ease;
+  font-family: var(--font-sans);
+  margin-bottom: 5px;
+}
+
+.form-card input:focus,
+.form-card select:focus,
+.form-card textarea:focus {
+  outline: none;
+  border-color: var(--ring);
+}
+
+.form-card button[type="submit"],
+.form-card .btn-submit {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  margin-top: 20px;
+  font-weight: 600;
+  font-size: 1em;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.form-card button[type="submit"]:hover,
+.form-card .btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  opacity: 0.9;
+}
+
+.back-btn {
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 15px;
+  text-align: center;
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.back-btn:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Variant Section */
+.variants-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid var(--border);
+}
+
+.variants-section h3 {
+  color: var(--primary);
+  margin-bottom: 15px;
+}
+
+.variants-section .help-text {
+  font-size: 0.85em;
+  color: var(--muted-foreground);
+  margin-bottom: 15px;
+}
+
+.variant-row {
+  background: var(--muted);
+  padding: 15px;
+  border-radius: var(--radius-md);
+  margin-bottom: 15px;
+  border: 1px solid var(--border);
+  position: relative;
+}
+
+.variant-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.variant-grid label {
+  font-size: 0.85em;
+}
+
+.variant-grid input {
+  margin-bottom: 0;
+}
+
+.remove-variant-btn {
+  display: none;
+  margin-top: 10px;
+  padding: 6px 12px;
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 0.85em;
+}
+
+.variant-row:not(:only-child) .remove-variant-btn {
+  display: inline-block;
+}
+
+.add-variant-btn {
+  background: oklch(0.6290 0.1902 156.4499);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 10px;
+  transition: all 0.2s;
+}
+
+.add-variant-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Product Selection (Discount forms) */
+.product-selection {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  margin-top: 10px;
+  background: var(--muted);
+}
+
+.product-checkbox {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  margin-bottom: 5px;
+  border-radius: var(--radius-sm, 8px);
+  transition: background-color 0.2s ease;
+}
+
+/* Category guidance banner */
+.category-guidance {
+  background: color-mix(in oklch, var(--primary) 8%, var(--card));
+  border: 1px solid color-mix(in oklch, var(--primary) 25%, var(--border));
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  font-size: 0.85em;
+  color: var(--muted-foreground);
+  margin-top: 8px;
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+
+/* Custom category input wrapper */
+.custom-category-wrap {
+  margin-top: 6px;
+  padding: 12px;
+  background: var(--muted);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border);
+}
+
+/* Image preview */
+.image-preview-wrap {
+  margin-top: 8px;
+}
+
+.image-preview {
+  max-width: 180px;
+  max-height: 180px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border);
+  object-fit: cover;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Current image (edit form) */
+.image-current-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 10px;
+  padding: 10px;
+  background: var(--muted);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.image-current-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+
+/* Variant image section */
+.variant-image-wrap {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+
+.variant-image-preview {
+  max-width: 100px;
+  max-height: 100px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  object-fit: cover;
+  margin-top: 6px;
+}
+
+.variant-current-image {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.variant-current-thumb {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+
+/* Warranty field */
+.form-help {
+  font-weight: 400;
+  font-size: 0.82em;
+  color: var(--muted-foreground);
+  margin-left: 4px;
+}
+
+.form-help.success {
+  color: oklch(0.6290 0.1902 156.4499);
+}
+
+.product-checkbox:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.product-checkbox input[type="checkbox"] {
+  width: auto;
+  margin-right: 10px;
+  margin-bottom: 0;
+}
+
+/* Error Messages */
+.error-msg {
+  background-color: var(--destructive);
+  color: var(--destructive-foreground);
+  padding: 15px;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+  font-size: 0.85em;
+  margin-top: 5px;
+}
+
+/* Discount Value Container */
+.discount-value-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.discount-value-container input {
+  flex: 1;
+}
+
+.discount-value-container span {
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+
+/* Checkbox Group */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: auto;
+}
+
+/* Help Text */
+.form-help {
+  font-size: 0.85em;
+  color: var(--muted-foreground);
+  font-weight: normal;
+}
+
+.form-help.success {
+  color: oklch(0.6290 0.1902 156.4499);
+}
+
+/* Selection hint */
+.selection-hint {
+  color: var(--primary);
+  display: block;
+  margin-top: 5px;
+  font-size: 0.85em;
+}

@@ -1,0 +1,512 @@
+/* Payment Status Page Styles (Success & Cancel) */
+/* 
+ * DEPENDENCIES: 
+ * 1. framework.css - Required. Provides core CSS variables (--background, --foreground, 
+ *    --primary, --border, etc.) and dark mode framework (.dark class styles).
+ * 2. dar-mode.js - Required for theme toggle functionality. Handles switching between
+ *    light and dark modes.
+ * 
+ * This file extends framework.css with payment-specific variables and components.
+ * It provides all necessary styles for Success.jsp and Cancel.jsp pages.
+ */
+
+/* Additional color variables for payment pages */
+:root {
+    --success: oklch(0.7459 0.1483 156.4499);
+    --success-light: oklch(0.9 0.05 156.4499);
+    --danger: oklch(0.6290 0.1902 23.0704);
+    --danger-light: oklch(0.95 0.05 23.0704);
+}
+
+.dark {
+    --success: oklch(0.8003 0.1821 151.7110);
+    --success-light: oklch(0.3 0.08 151.7110);
+    --danger: oklch(0.7106 0.1661 22.2162);
+    --danger-light: oklch(0.3 0.08 22.2162);
+}
+
+/* Main Content */
+.main-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.result-card {
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 3rem 2.5rem;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.result-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+}
+
+.result-card.success::before {
+    background: linear-gradient(90deg, var(--success), var(--chart-1));
+}
+
+.result-card.cancelled::before {
+    background: linear-gradient(90deg, var(--danger), #ff6b6b);
+}
+
+/* Result Icon */
+.result-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.result-icon.success {
+    background: var(--success-light);
+    animation: successPulse 2s ease-in-out infinite;
+}
+
+.result-icon.cancelled {
+    background: var(--danger-light);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes successPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 var(--success);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px transparent;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.result-icon svg {
+    width: 50px;
+    height: 50px;
+    stroke-width: 2.5;
+}
+
+.result-icon.success svg {
+    stroke: var(--success);
+}
+
+.result-icon.cancelled svg {
+    stroke: var(--danger);
+}
+
+/* Typography */
+h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+h1.success-title {
+    color: var(--success);
+}
+
+h1.cancelled-title {
+    color: var(--danger);
+}
+
+.subtitle {
+    color: var(--muted-foreground);
+    font-size: 1.1rem;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+/* Order Details */
+.order-details {
+    background: var(--muted);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    margin: 2rem 0;
+    border: 1px solid var(--border);
+    text-align: left;
+}
+
+.order-section {
+    margin-bottom: 1.5rem;
+}
+
+.order-section:last-child {
+    margin-bottom: 0;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--border);
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: var(--foreground);
+    font-size: 0.95rem;
+}
+
+.detail-value {
+    font-weight: 500;
+    color: var(--foreground);
+    font-size: 0.95rem;
+    text-align: right;
+    max-width: 60%;
+    word-wrap: break-word;
+}
+
+/* Status Badges */
+.status-paid {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--success);
+    color: white;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: var(--shadow-sm);
+}
+
+.status-cancelled {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--danger);
+    color: white;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: var(--shadow-sm);
+}
+
+.amount-highlight {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* Product Items */
+.product-item {
+    padding: 0.75rem;
+    background: var(--card);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.product-item-name {
+    font-weight: 600;
+    color: var(--foreground);
+    margin-bottom: 0.25rem;
+}
+
+.product-item-details {
+    font-size: 0.9em;
+    color: var(--muted-foreground);
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-download {
+    min-width: 200px;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    opacity: 0.9;
+}
+
+.btn-secondary {
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    border: 1.5px solid var(--border);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    background: var(--accent);
+    color: var(--accent-foreground);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-download {
+    background: var(--success);
+    color: white;
+}
+
+.btn-download:hover {
+    background: var(--chart-1);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Messages */
+.success-message,
+.info-box {
+    margin-top: 2.5rem;
+    padding: 1.5rem;
+    background: var(--muted);
+    border-radius: var(--radius-md);
+}
+
+.success-message {
+    border-left: 4px solid var(--success);
+}
+
+.info-box {
+    border-left: 4px solid var(--primary);
+}
+
+.success-message p,
+.info-box p {
+    color: var(--foreground);
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+    font-weight: 500;
+}
+
+.success-message p:last-child,
+.info-box p:last-child {
+    margin-bottom: 0;
+}
+
+.info-box h3 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.info-box .contact-info {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+
+.info-box .contact-info p {
+    margin: 0.5rem 0;
+    font-weight: 500;
+    color: var(--foreground);
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 2rem 20px;
+    color: var(--muted-foreground);
+    font-size: 0.9rem;
+}
+
+/* Print Styles */
+@media print {
+    body {
+        padding-top: 0;
+    }
+
+    nav,
+    .action-buttons,
+    footer,
+    .success-message,
+    .info-box {
+        display: none;
+    }
+
+    .result-card {
+        box-shadow: none;
+        border: none;
+    }
+
+    .order-details {
+        page-break-inside: avoid;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .result-card {
+        padding: 2rem 1.5rem;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-download {
+        width: 100%;
+    }
+}
+
+/* Navigation Styles (shared between Success and Cancel pages) */
+nav.public-nav {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 1000px;
+    border-radius: 12px;
+    z-index: 1000;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.dark nav.public-nav {
+    background-color: rgba(34, 35, 48, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+nav.public-nav.scrolled {
+    background-color: rgba(255, 255, 255, 0.3);
+    box-shadow: var(--shadow-md);
+    top: 15px;
+}
+
+.dark nav.public-nav.scrolled {
+    background-color: rgba(34, 35, 48, 0.3);
+    top: 15px;
+}
+
+.nav-container {
+    width: 100%;
+    padding: 0.8rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav.public-nav .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.theme-toggle {
+    padding: 0.5rem 1rem;
+    background: var(--secondary);
+    border: 1px solid var(--border);
+    color: var(--secondary-foreground);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-right: 10px;
+}
+
+.theme-toggle:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+}
+
+.btn-logout {
+    padding: 0.6rem 1.2rem;
+    background: transparent;
+    border: 1.5px solid var(--primary);
+    color: var(--primary);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-logout:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+}
+
+@media (max-width: 768px) {
+    .nav-container {
+        padding: 1rem;
+    }
+}
