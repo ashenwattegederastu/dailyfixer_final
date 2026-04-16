@@ -124,8 +124,10 @@
 <%--                        </div>--%>
 <%--                    </div>--%>
 <%--                </section>--%>
+                <jsp:include page="/pages/shared/translate.jsp" />
                 <!-- Footer -->
                 <jsp:include page="/pages/shared/footer.jsp" />
+
 
                 <!-- Page-specific Scripts -->
                 <script>
