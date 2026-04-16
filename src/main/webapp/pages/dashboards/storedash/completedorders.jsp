@@ -55,29 +55,7 @@
 </head>
 <body class="dashboard-layout">
 
-<header class="topbar">
-    <div class="logo">Daily Fixer</div>
-    <div class="panel-name">Store Panel</div>
-    <div style="display: flex; align-items: center; gap: 10px;">
-        <a href="${pageContext.request.contextPath}/logout" class="logout-btn">Log Out</a>
-    </div>
-</header>
-
-<aside class="sidebar">
-    <h3>Navigation</h3>
-    <ul>
-        <li><a href="${pageContext.request.contextPath}/pages/dashboards/storedash/storedashmain.jsp">Dashboard</a></li>
-        <li><a href="${pageContext.request.contextPath}/pages/dashboards/storedash/orders.jsp">Orders</a></li>
-        <li><a href="${pageContext.request.contextPath}/pages/dashboards/storedash/upfordelivery.jsp">Up for Delivery</a></li>
-        <li><a href="${pageContext.request.contextPath}/pages/dashboards/storedash/completedorders.jsp" class="active">Completed Orders</a></li>
-        <li><a href="${pageContext.request.contextPath}/ListProductsServlet">Catalogue</a></li>
-        <li><a href="${pageContext.request.contextPath}/ListDiscountsServlet">Discounts</a></li>
-        <li><a href="${pageContext.request.contextPath}/StoreReviewsServlet">Customer Reviews</a></li>
-        <li><a href="${pageContext.request.contextPath}/pages/dashboards/storedash/finances.jsp">Finances</a></li>
-        <li><a href="${pageContext.request.contextPath}/pages/dashboards/storedash/myStore.jsp">My Store</a></li>
-        <li><a href="${pageContext.request.contextPath}/pages/dashboards/storedash/myProfile.jsp">Profile</a></li>
-    </ul>
-</aside>
+<jsp:include page="/pages/dashboards/storedash/sidebar.jsp" />
 
 <main class="container">
     <h2>Completed Orders</h2>

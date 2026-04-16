@@ -297,30 +297,7 @@
 </head>
 <body class="dashboard-layout">
 
-<header class="topbar">
-    <div class="logo">Daily Fixer</div>
-    <div class="panel-name">Store Panel</div>
-    <div style="display: flex; align-items: center; gap: 10px;">
-        <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙 Dark</button>
-        <a href="${pageContext.request.contextPath}/logout" class="logout-btn">Log Out</a>
-    </div>
-</header>
-
-<aside class="sidebar">
-    <h3>Navigation</h3>
-    <ul>
-        <li><a href="${pageContext.request.contextPath}/pages/dashboards/storedash/storedashmain.jsp">Dashboard</a></li>
-        <li><a href="${pageContext.request.contextPath}/pages/dashboards/storedash/orders.jsp" class="active">Orders</a></li>
-        <li><a href="${pageContext.request.contextPath}/pages/dashboards/storedash/upfordelivery.jsp">Up for Delivery</a></li>
-        <li><a href="${pageContext.request.contextPath}/pages/dashboards/storedash/completedorders.jsp">Completed Orders</a></li>
-        <li><a href="${pageContext.request.contextPath}/ListProductsServlet">Catalogue</a></li>
-        <li><a href="${pageContext.request.contextPath}/ListDiscountsServlet">Discounts</a></li>
-        <li><a href="${pageContext.request.contextPath}/StoreReviewsServlet">Customer Reviews</a></li>
-        <li><a href="${pageContext.request.contextPath}/pages/dashboards/storedash/finances.jsp">Finances</a></li>
-        <li><a href="${pageContext.request.contextPath}/pages/dashboards/storedash/myStore.jsp">My Store</a></li>
-        <li><a href="${pageContext.request.contextPath}/pages/dashboards/storedash/myProfile.jsp">Profile</a></li>
-    </ul>
-</aside>
+<jsp:include page="/pages/dashboards/storedash/sidebar.jsp" />
 
 <main class="container">
     <h2>Orders</h2>
@@ -568,7 +545,7 @@ function showOrderDetailsModalFromButton(button) {
         let html = '';
         orderItems.forEach(item => {
             html += '<div style="padding: 8px; background: #f9f9f9; border-radius: 6px; border-left: 3px solid var(--accent); margin-bottom: 8px;">';
-            html += '<div style="font-weight: 600; color: var(--text-dark);">' + escapeHtml(item.productName || '-') + '</div>';
+            html += '<div style="font-weight: 600; color: var(--text-light);">' + escapeHtml(item.productName || '-') + '</div>';
             html += '<div style="font-size: 0.9em; color: var(--text-secondary); margin-top: 4px;">';
             html += 'Quantity: ' + (item.quantity || 0) + ' × LKR ' + parseFloat(item.unitPrice || 0).toFixed(2) + ' = LKR ' + parseFloat(item.totalPrice || 0).toFixed(2);
             html += '</div>';
