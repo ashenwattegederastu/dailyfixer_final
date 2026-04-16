@@ -15,11 +15,19 @@
     switch (user.getRole().toLowerCase()) {
         case "driver":
             sidebarPage = "/pages/dashboards/driverdash/sidebar.jsp";
-            profilePath = "/pages/dashboards/driverdash/technicianProfile.jsp";
+            profilePath = "/pages/dashboards/driverdash/myProfile.jsp";
+            break;
+        case "volunteer":
+            sidebarPage = "/pages/dashboards/volunteerdash/sidebar.jsp";
+            profilePath = "/pages/dashboards/volunteerdash/myProfile.jsp";
+            break;
+        case "technician":
+            sidebarPage = "/pages/dashboards/techniciandash/sidebar.jsp";
+            profilePath = "/technician/profile";
             break;
         case "admin":
             sidebarPage = "/pages/dashboards/admindash/sidebar.jsp";
-            profilePath = "/pages/dashboards/admindash/adminProfile.jsp";
+            profilePath = "/pages/dashboards/admindash/admindashmain.jsp";
             break;
         default:
             sidebarPage = "/pages/dashboards/userdash/sidebar.jsp";
@@ -64,8 +72,13 @@
     </header>
 
     <div class="form-container">
-        <form action="${pageContext.request.contextPath}/UpdateProfileServlet" method="post">
+        <form action="${pageContext.request.contextPath}/UpdateProfileServlet" method="post" enctype="multipart/form-data">
             <input type="hidden" name="userId" value="${sessionScope.currentUser.userId}">
+
+            <div class="form-group">
+                <label>Profile Picture</label>
+                <input type="file" name="profilePicture" accept="image/*">
+            </div>
 
             <div class="form-group">
                 <label>First Name</label>

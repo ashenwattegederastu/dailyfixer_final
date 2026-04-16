@@ -41,7 +41,26 @@ public class UpdateProfileServlet extends HttpServlet {
             // Refresh session with updated user data
             User updatedUser = userDAO.getUserById(userId);
             request.getSession().setAttribute("currentUser", updatedUser);
-            response.sendRedirect(request.getContextPath() + "/technician/profile");
+            String role = updatedUser.getRole() == null ? "" : updatedUser.getRole().toLowerCase().trim();
+            String redirect;
+            switch (role) {
+                case "driver":
+                    redirect = request.getContextPath() + "/pages/dashboards/driverdash/myProfile.jsp";
+                    break;
+                case "volunteer":
+                    redirect = request.getContextPath() + "/pages/dashboards/volunteerdash/myProfile.jsp";
+                    break;
+                case "technician":
+                    redirect = request.getContextPath() + "/technician/profile";
+                    break;
+                case "admin":
+                    redirect = request.getContextPath() + "/pages/dashboards/admindash/admindashmain.jsp";
+                    break;
+                default:
+                    redirect = request.getContextPath() + "/pages/dashboards/userdash/myProfile.jsp";
+                    break;
+            }
+            response.sendRedirect(redirect);
         } else {
             response.getWriter().println("<script>alert('Update failed. Try again.');history.back();</script>");
         }

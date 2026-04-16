@@ -59,7 +59,8 @@ public class DeliveryAssignmentDAO {
 
     /**
      * Fetches all PENDING, unassigned assignments matching any of the given vehicle types.
-     * The 10 km radius filter is applied in Java after fetching (store coords come via JOIN).
+     * Dual radius filters run in Java: driver ≤ storeRadiusKm from store AND driver ≤ buyerRadiusKm from buyer.
+     * distanceKm on each result is set to the store→buyer total route distance.
      */
     private static final String SELECT_PENDING_BASE =
         "SELECT da.*, " +
@@ -272,7 +273,7 @@ public class DeliveryAssignmentDAO {
      */
     public List<DeliveryAssignment> getPendingNearby(double driverLat, double driverLng,
                                                       List<String> vehicleTypes,
-                                                      double radiusKm) {
+                                                      double storeRadiusKm, double buyerRadiusKm) {
         List<DeliveryAssignment> result = new ArrayList<>();
         if (vehicleTypes == null || vehicleTypes.isEmpty()) return result;
 
@@ -298,18 +299,36 @@ public class DeliveryAssignmentDAO {
                     double storeLat = rs.getDouble("store_lat");
                     double storeLng = rs.getDouble("store_lng");
 
-                    // Apply 10 km radius filter
-                    double dist = 0;
+                    // Filter 1: driver must be within storeRadiusKm of the store (pickup point)
                     if (storeLat != 0 && storeLng != 0 && driverLat != 0 && driverLng != 0) {
-                        dist = DeliveryFeeCalculator.haversineDistance(storeLat, storeLng, driverLat, driverLng);
-                        if (dist > radiusKm) continue; // outside radius — skip
+                        double driverToStore = DeliveryFeeCalculator.haversineDistance(
+                                driverLat, driverLng, storeLat, storeLng);
+                        if (driverToStore > storeRadiusKm) continue;
+                    }
+
+                    // Filter 2: driver must be within buyerRadiusKm of the buyer (delivery point)
+                    double buyerLat = rs.getDouble("delivery_lat");
+                    boolean buyerLatNull = rs.wasNull();
+                    double buyerLng = rs.getDouble("delivery_lng");
+                    boolean buyerLngNull = rs.wasNull();
+                    if (!buyerLatNull && !buyerLngNull && driverLat != 0 && driverLng != 0) {
+                        double driverToBuyer = DeliveryFeeCalculator.haversineDistance(
+                                driverLat, driverLng, buyerLat, buyerLng);
+                        if (driverToBuyer > buyerRadiusKm) continue;
+                    }
+
+                    // distanceKm = total route distance: store → buyer
+                    double totalDistance = 0;
+                    if (storeLat != 0 && storeLng != 0 && !buyerLatNull && !buyerLngNull) {
+                        totalDistance = DeliveryFeeCalculator.haversineDistance(
+                                storeLat, storeLng, buyerLat, buyerLng);
                     }
 
                     DeliveryAssignment da = mapRow(rs);
                     da.setStoreName(rs.getString("store_name"));
                     da.setStoreLat(storeLat);
                     da.setStoreLng(storeLng);
-                    da.setDistanceKm(dist);
+                    da.setDistanceKm(totalDistance);
                     da.setCustomerName(rs.getString("first_name") + " " + rs.getString("last_name"));
                     result.add(da);
                 }

@@ -36,7 +36,7 @@
 
         if (!vehicleCategories.isEmpty()) {
             DeliveryAssignmentDAO assignmentDAO = new DeliveryAssignmentDAO();
-            nearbyAssignments = assignmentDAO.getPendingNearby(driverLat, driverLng, vehicleCategories, 10.0);
+            nearbyAssignments = assignmentDAO.getPendingNearby(driverLat, driverLng, vehicleCategories, 5.0, 10.0);
         }
     }
 %>
@@ -212,7 +212,7 @@
             <div class="toolbar">
                 <span style="font-size: 0.9em; color: var(--muted-foreground);">
                     Showing <strong><%= nearbyAssignments.size() %></strong>
-                    delivery request<%= nearbyAssignments.size() != 1 ? "s" : "" %> within 10 km
+                    delivery request<%= nearbyAssignments.size() != 1 ? "s" : "" %> (≤5 km from store, ≤10 km from buyer)
                 </span>
                 <button class="refresh-btn" onclick="window.location.reload()">↻ Refresh</button>
             </div>
@@ -239,7 +239,7 @@
                 <div class="details-grid">
                     <p><strong>Order ID:</strong> <%= a.getOrderId() %></p>
                     <p><strong>Vehicle Required:</strong> <%= a.getRequiredVehicleType() %></p>
-                    <p><strong>Distance to Store:</strong> <%= distStr %></p>
+                    <p><strong>Total Route Distance:</strong> <%= distStr %></p>
                     <p><strong>Pickup:</strong> <%= pickupAddr %></p>
                     <p><strong>Dropoff:</strong> <%= dropoffAddr %></p>
                 </div>
