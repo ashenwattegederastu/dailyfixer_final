@@ -229,6 +229,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Lora:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/framework.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/payment-status.css">
+    <!-- Importing Phosphor Icon Library Locally from assets-->
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="${pageContext.request.contextPath}/assets/icons/regular/style.css"
+    />
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="${pageContext.request.contextPath}/assets/icons/fill/style.css"
+    />
 </head>
 
 <body>
@@ -408,21 +419,21 @@
 
             <div class="action-buttons">
                 <button onclick="downloadReceipt()" class="btn-primary btn-download">
-                    📄 Download Receipt
+                    <i class="ph ph-file"></i> Download Receipt
                 </button>
                 <a href="store_main.jsp" class="btn-primary">
-                    🛒 Continue Shopping
+                    <i class="ph ph-shopping-cart"></i> Continue Shopping
                 </a>
                 <a href="<%=request.getContextPath()%>/index.jsp" class="btn-secondary">
-                    🏠 Back to Home
+                    <i class="ph ph-house"></i> Back to Home
                 </a>
             </div>
 
             <div class="success-message">
-                <p>✅ Your payment has been successfully processed.</p>
-                <p>📧 A confirmation email has been sent to your email address.</p>
-                <p>📦 Your order will be prepared and shipped soon.</p>
-                <p>📞 Our team will contact you if there are any updates regarding your order.</p>
+                <p>Your payment has been successfully processed.</p>
+                <p>A confirmation email has been sent to your email address.</p>
+                <p>Your order will be prepared and shipped soon.</p>
+                <p>Our team will contact you if there are any updates regarding your order.</p>
             </div>
         </div>
     </main>

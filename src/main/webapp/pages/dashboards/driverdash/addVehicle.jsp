@@ -331,7 +331,7 @@
         fetch(MAKES_URL + '?category=' + encodeURIComponent(category))
             .then(function(r){ return r.json(); })
             .then(function(makes) {
-                sel.innerHTML = '<option value="">-- Select Make --</option>';
+                sel.innerHTML = '<option value="" required>-- Select Make --</option>';
                 makes.forEach(function(m) {
                     var opt = document.createElement('option');
                     opt.value = m; opt.textContent = m;

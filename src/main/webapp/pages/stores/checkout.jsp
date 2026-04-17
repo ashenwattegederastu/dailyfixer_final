@@ -226,6 +226,22 @@ if (checkoutCity != null) session.removeAttribute("checkout_city");
 if (checkoutProvince != null) session.removeAttribute("checkout_province");
 if (checkoutDistrict != null) session.removeAttribute("checkout_district");
 if (checkoutDoorstepConsent != null) session.removeAttribute("checkout_doorstep_consent");
+
+// Autofill defaults from user profile (only used when not repopulating after a form error)
+String defaultName = checkoutName != null ? checkoutName
+    : (currentUser.getFirstName() + " " + currentUser.getLastName()).trim();
+String defaultPhone = checkoutPhone != null ? checkoutPhone
+    : (currentUser.getPhoneNumber() != null ? currentUser.getPhoneNumber() : "");
+String defaultEmail = checkoutEmail != null ? checkoutEmail
+    : (currentUser.getEmail() != null ? currentUser.getEmail() : "");
+String defaultCity = checkoutCity != null ? checkoutCity
+    : (currentUser.getCity() != null ? currentUser.getCity() : "");
+
+// Saved browse-location for map pre-population
+Object sessionLatObj = session.getAttribute("userLat");
+Object sessionLngObj = session.getAttribute("userLng");
+String savedLat = (sessionLatObj != null) ? String.valueOf(sessionLatObj) : null;
+String savedLng = (sessionLngObj != null) ? String.valueOf(sessionLngObj) : null;
 %>
 
 <!DOCTYPE html>
@@ -330,6 +346,19 @@ if (checkoutDoorstepConsent != null) session.removeAttribute("checkout_doorstep_
             font-size: 1.15rem;
             color: var(--primary);
         }
+
+        /* ===== REAL-TIME VALIDATION ===== */
+        .field-error {
+            color: var(--destructive, #dc2626);
+            font-size: 0.8rem;
+            margin-top: 4px;
+            display: none;
+        }
+        .field-error.visible { display: block; }
+        input.invalid, select.invalid { border-color: var(--destructive, #dc2626) !important; }
+        input.valid,   select.valid   { border-color: #16a34a !important; }
+        .pin-ok  { color: #16a34a; }
+        .pin-err { color: var(--destructive, #dc2626); }
     </style>
 </head>
 
@@ -385,17 +414,20 @@ if (checkoutDoorstepConsent != null) session.removeAttribute("checkout_doorstep_
                 <% } %>
                 <div class="form-group">
                     <label>Name</label>
-                    <input type="text" name="name" value="<%= checkoutName != null ? checkoutName : "" %>" required>
+                    <input type="text" id="co-name" name="name" value="<%= defaultName %>" required autocomplete="name">
+                    <span class="field-error" id="err-name">Please enter your full name (first and last).</span>
                 </div>
 
                 <div class="form-group">
                     <label>Phone</label>
-                    <input type="text" name="phone" value="<%= checkoutPhone != null ? checkoutPhone : "" %>" required>
+                    <input type="text" id="co-phone" name="phone" value="<%= defaultPhone %>" required autocomplete="tel" placeholder="e.g. 0712345678">
+                    <span class="field-error" id="err-phone">Enter a valid Sri Lankan number (07XXXXXXXX or +947XXXXXXXX).</span>
                 </div>
 
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="email" name="email" value="<%= (String) session.getAttribute("checkout_email") != null ? (String) session.getAttribute("checkout_email") : "" %>" required>
+                    <input type="email" id="co-email" name="email" value="<%= defaultEmail %>" required autocomplete="email">
+                    <span class="field-error" id="err-email">Enter a valid email address.</span>
                 </div>
 
                 <!-- Location selection: type address or pick on map -->
@@ -409,6 +441,7 @@ if (checkoutDoorstepConsent != null) session.removeAttribute("checkout_doorstep_
                     <p style="font-size: 12px; color: var(--muted-foreground); margin-top: 4px;">
                         You can <strong>type your address</strong> to search, or <strong>click on the map</strong> to set your exact location.
                     </p>
+                    <span class="field-error" id="err-location">Please pin your delivery location on the map above.</span>
                 </div>
 
                 <!-- Hidden fields to submit coordinates with the order -->
@@ -417,13 +450,14 @@ if (checkoutDoorstepConsent != null) session.removeAttribute("checkout_doorstep_
 
                 <div class="form-group">
                     <label>Address</label>
-                    <input type="text" id="address-input" name="address" value="<%= checkoutAddress != null ? checkoutAddress : "" %>" required>
+                    <input type="text" id="address-input" name="address" value="<%= checkoutAddress != null ? checkoutAddress : "" %>" required autocomplete="street-address">
+                    <span class="field-error" id="err-address">Please enter your delivery address.</span>
                 </div>
 
                 <div class="address-row">
                     <div class="form-group">
                         <label>Province</label>
-                        <select name="province" required>
+                        <select id="co-province" name="province" required>
                             <option value="">Select Province</option>
                             <option value="Western" <%= "Western".equals(checkoutProvince) ? "selected" : "" %>>Western</option>
                             <option value="Central" <%= "Central".equals(checkoutProvince) ? "selected" : "" %>>Central</option>
@@ -435,10 +469,11 @@ if (checkoutDoorstepConsent != null) session.removeAttribute("checkout_doorstep_
                             <option value="Sabaragamuwa" <%= "Sabaragamuwa".equals(checkoutProvince) ? "selected" : "" %>>Sabaragamuwa</option>
                             <option value="Uva" <%= "Uva".equals(checkoutProvince) ? "selected" : "" %>>Uva</option>
                         </select>
+                        <span class="field-error" id="err-province">Please select a province.</span>
                     </div>
                     <div class="form-group">
                         <label>District</label>
-                        <select name="district" required>
+                        <select id="co-district" name="district" required>
                             <option value="">Select District</option>
                             <option value="Colombo" <%= "Colombo".equals(checkoutDistrict) ? "selected" : "" %>>Colombo</option>
                             <option value="Gampaha" <%= "Gampaha".equals(checkoutDistrict) ? "selected" : "" %>>Gampaha</option>
@@ -466,10 +501,12 @@ if (checkoutDoorstepConsent != null) session.removeAttribute("checkout_doorstep_
                             <option value="Ratnapura" <%= "Ratnapura".equals(checkoutDistrict) ? "selected" : "" %>>Ratnapura</option>
                             <option value="Kegalle" <%= "Kegalle".equals(checkoutDistrict) ? "selected" : "" %>>Kegalle</option>
                         </select>
+                        <span class="field-error" id="err-district">Please select a district.</span>
                     </div>
                     <div class="form-group">
                         <label>City</label>
-                        <input type="text" name="city" value="<%= checkoutCity != null ? checkoutCity : "" %>" required>
+                        <input type="text" id="co-city" name="city" value="<%= defaultCity %>" required autocomplete="address-level2">
+                        <span class="field-error" id="err-city">Please enter your city.</span>
                     </div>
                 </div>
 
@@ -638,6 +675,16 @@ if (checkoutDoorstepConsent != null) session.removeAttribute("checkout_doorstep_
                     }
                 });
             }
+
+            // Pre-populate map with saved browse location
+            const presetLat = <%= savedLat != null ? savedLat : "null" %>;
+            const presetLng = <%= savedLng != null ? savedLng : "null" %>;
+            if (presetLat && presetLng) {
+                checkoutMap.setCenter({ lat: presetLat, lng: presetLng });
+                checkoutMap.setZoom(14);
+                setCheckoutLocation(presetLat, presetLng);
+                reverseGeocodeCheckout(new google.maps.LatLng(presetLat, presetLng));
+            }
         }
 
         const itemsSubtotal = <%=total - totalDiscount%>;
@@ -729,6 +776,114 @@ if (checkoutDoorstepConsent != null) session.removeAttribute("checkout_doorstep_
                     document.getElementById('map-search-input').focus();
                 }
             });
+
+        // ===== REAL-TIME VALIDATION =====
+        (function () {
+            function mark(input, errorEl, isValid) {
+                input.classList.toggle('invalid', !isValid);
+                input.classList.toggle('valid',    isValid);
+                errorEl.classList.toggle('visible', !isValid);
+            }
+
+            var nameInput     = document.getElementById('co-name');
+            var phoneInput    = document.getElementById('co-phone');
+            var emailInput    = document.getElementById('co-email');
+            var addrInput     = document.getElementById('address-input');
+            var provinceInput = document.getElementById('co-province');
+            var districtInput = document.getElementById('co-district');
+            var cityInput     = document.getElementById('co-city');
+            var locationErr   = document.getElementById('err-location');
+
+            function validateName() {
+                var ok = /^[A-Za-z\u00C0-\u024F'\- ]{2,}(\s+[A-Za-z\u00C0-\u024F'\- ]{1,})+$/.test(nameInput.value.trim());
+                mark(nameInput, document.getElementById('err-name'), ok);
+                return ok;
+            }
+            function validatePhone() {
+                var v = phoneInput.value.trim().replace(/\s/g, '');
+                var ok = /^(\+94|0094|0)[0-9]{9}$/.test(v);
+                mark(phoneInput, document.getElementById('err-phone'), ok);
+                return ok;
+            }
+            function validateEmail() {
+                var ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
+                mark(emailInput, document.getElementById('err-email'), ok);
+                return ok;
+            }
+            function validateAddress() {
+                var ok = addrInput.value.trim().length >= 5;
+                mark(addrInput, document.getElementById('err-address'), ok);
+                return ok;
+            }
+            function validateProvince() {
+                var ok = provinceInput.value !== '';
+                mark(provinceInput, document.getElementById('err-province'), ok);
+                return ok;
+            }
+            function validateDistrict() {
+                var ok = districtInput.value !== '';
+                mark(districtInput, document.getElementById('err-district'), ok);
+                return ok;
+            }
+            function validateCity() {
+                var ok = cityInput.value.trim().length >= 2;
+                mark(cityInput, document.getElementById('err-city'), ok);
+                return ok;
+            }
+            function validateLocation() {
+                var ok = !!(selectedLat && selectedLng);
+                locationErr.classList.toggle('visible', !ok);
+                locationErr.classList.toggle('pin-err', !ok);
+                locationErr.classList.toggle('pin-ok',   ok);
+                locationErr.textContent = ok
+                    ? '\u2713 Location pinned.'
+                    : 'Please pin your delivery location on the map above.';
+                return ok;
+            }
+
+            // Wrap setCheckoutLocation so the location field validates automatically when the pin is placed
+            var _origSet = setCheckoutLocation;
+            setCheckoutLocation = function(lat, lng) {
+                _origSet(lat, lng);
+                locationErr.textContent = '\u2713 Location pinned.';
+                locationErr.classList.remove('visible', 'pin-err');
+                locationErr.classList.add('pin-ok');
+            };
+
+            // Wire up live events
+            nameInput.addEventListener('input', validateName);     nameInput.addEventListener('blur', validateName);
+            phoneInput.addEventListener('input', validatePhone);   phoneInput.addEventListener('blur', validatePhone);
+            emailInput.addEventListener('input', validateEmail);   emailInput.addEventListener('blur', validateEmail);
+            addrInput.addEventListener('input', validateAddress);  addrInput.addEventListener('blur', validateAddress);
+            provinceInput.addEventListener('change', validateProvince);
+            districtInput.addEventListener('change', validateDistrict);
+            cityInput.addEventListener('input', validateCity);     cityInput.addEventListener('blur', validateCity);
+
+            // Validate autofilled values once the page is ready
+            setTimeout(function () {
+                if (nameInput.value.trim())     validateName();
+                if (phoneInput.value.trim())    validatePhone();
+                if (emailInput.value.trim())    validateEmail();
+                if (addrInput.value.trim())     validateAddress();
+                if (provinceInput.value)        validateProvince();
+                if (districtInput.value)        validateDistrict();
+                if (cityInput.value.trim())     validateCity();
+                if (selectedLat && selectedLng) validateLocation();
+            }, 400);
+
+            // Override submit to run full validation and scroll to first error
+            document.querySelector('form[action*="redirectToPayment"]')
+                .addEventListener('submit', function (e) {
+                    var ok = validateName()     & validatePhone()   & validateEmail()
+                           & validateAddress()  & validateProvince() & validateDistrict()
+                           & validateCity()     & validateLocation();
+                    if (!ok) {
+                        e.preventDefault();
+                        var first = document.querySelector('input.invalid, select.invalid, #err-location.visible');
+                        if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+        })();
     </script>
 
 </body>
