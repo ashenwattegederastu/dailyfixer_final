@@ -97,7 +97,7 @@
                     <div class="hero-content">
                         <h1>Need Professional Help?</h1>
                         <p>Book a certified technician for complex repairs. Fast, reliable, and affordable.</p>
-                        <a href="${pageContext.request.contextPath}/findtech.jsp" class="hero-cta">Book Now</a>
+                        <a href="${pageContext.request.contextPath}/services" class="hero-cta">Book Now</a>
                     </div>
                     <div class="scroll-indicator">
                         <div class="chevron"></div>

@@ -20,6 +20,12 @@
             <title>${guide.title} | Daily Fixer</title>
 
             <style>
+                body {
+                    background-image: url('<%= request.getContextPath() %>/assets/images/backgrounds/guides.jpg'); /* your image path */
+                    background-size: cover;       /* fill entire screen */
+                    background-repeat: no-repeat; /* no tiling */
+                    background-position: center;  /* center the image */
+                }
                 .page-container {
                     max-width: 1000px;
                     margin: 0 auto;

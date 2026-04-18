@@ -10,6 +10,14 @@
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Book a Technician - Daily Fixer</title>
             <jsp:include page="../shared/header.jsp" />
+            <style>
+                body {
+                    background-image: url('<%= request.getContextPath() %>/assets/images/backgrounds/guides.jpg'); /* your image path */
+                    background-size: cover;       /* fill entire screen */
+                    background-repeat: no-repeat; /* no tiling */
+                    background-position: center;  /* center the image */
+                }
+            </style>
         </head>
 
         <body>

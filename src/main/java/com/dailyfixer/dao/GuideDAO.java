@@ -258,6 +258,34 @@ public class GuideDAO {
     }
 
     /**
+     * Returns lightweight guide suggestions (id, title, mainCategory) for
+     * AJAX typeahead. Only ACTIVE guides, ordered by view_count descending.
+     */
+    public List<Guide> suggestGuides(String keyword, int limit) {
+        List<Guide> list = new ArrayList<>();
+        if (keyword == null || keyword.trim().isEmpty()) return list;
+        String sql = "SELECT guide_id, title, main_category FROM guides " +
+                "WHERE status = 'ACTIVE' AND title LIKE ? " +
+                "ORDER BY view_count DESC LIMIT ?";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, "%" + keyword.trim() + "%");
+            ps.setInt(2, limit);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Guide g = new Guide();
+                g.setGuideId(rs.getInt("guide_id"));
+                g.setTitle(rs.getString("title"));
+                g.setMainCategory(rs.getString("main_category"));
+                list.add(g);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    /**
      * Search guides with filters.
      */
     public List<Guide> searchGuides(String keyword, String mainCategory, String subCategory) {

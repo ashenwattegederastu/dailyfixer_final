@@ -27,6 +27,18 @@ public class GuideListServlet extends HttpServlet {
         String keyword = request.getParameter("keyword");
         String mainCategory = request.getParameter("mainCategory");
         String subCategory = request.getParameter("subCategory");
+        String viewAll = request.getParameter("viewAll");
+
+        boolean hasFilter = (keyword != null && !keyword.isEmpty())
+                || (mainCategory != null && !mainCategory.isEmpty())
+                || (subCategory != null && !subCategory.isEmpty())
+                || "true".equals(viewAll);
+
+        // No parameters — show the hub landing page
+        if (!hasFilter) {
+            request.getRequestDispatcher("/pages/guides/guides-hub.jsp").forward(request, response);
+            return;
+        }
 
         List<Guide> guides;
 

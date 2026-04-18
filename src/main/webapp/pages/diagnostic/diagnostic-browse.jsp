@@ -13,6 +13,12 @@
                 rel="stylesheet">
             <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/framework.css">
             <style>
+                body {
+                    background-image: url('<%= request.getContextPath() %>/assets/images/backgrounds/guides.jpg'); /* your image path */
+                    background-size: cover;       /* fill entire screen */
+                    background-repeat: no-repeat; /* no tiling */
+                    background-position: center;  /* center the image */
+                }
                 .diagnostic-container {
                     max-width: 1200px;
                     margin: 0 auto;

@@ -11,6 +11,12 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/icons/regular/style.css" />
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/icons/fill/style.css" />
     <style>
+        body {
+            background-image: url('<%= request.getContextPath() %>/assets/images/backgrounds/guides.jpg'); /* your image path */
+            background-size: cover;       /* fill entire screen */
+            background-repeat: no-repeat; /* no tiling */
+            background-position: center;  /* center the image */
+        }
         .page-container {
             max-width: 1400px;
             margin: 0 auto;
