@@ -122,6 +122,13 @@
                     margin-bottom: 1rem;
                 }
 
+                .diagnostic-cat-img {
+                    width: 100px;
+                    height: 100px;
+                    object-fit: contain;
+                    display: inline-block;
+                }
+
                 .category-name {
                     font-size: 1.25rem;
                     font-weight: 600;
@@ -323,9 +330,9 @@
                         let categoriesData = [];
 
                         const categoryIcons = {
-                            'Home Repair': '<i class="ph ph-house"></i>',
-                            'Home Electronic Repair': '<i class="ph ph-devices"></i>',
-                            'Vehicle Repair': '<i class="ph ph-van"></i>',
+                            'Home Repair': '<img src="' + contextPath + '/assets/images/home.png" alt="Home Repair" class="diagnostic-cat-img">',
+                            'Home Electronic Repair': '<img src="' + contextPath + '/assets/images/tv.png" alt="Home Electronic Repair" class="diagnostic-cat-img">',
+                            'Vehicle Repair': '<img src="' + contextPath + '/assets/images/tyre.png" alt="Vehicle Repair" class="diagnostic-cat-img">',
                         };
 
                         document.addEventListener('DOMContentLoaded', function () {

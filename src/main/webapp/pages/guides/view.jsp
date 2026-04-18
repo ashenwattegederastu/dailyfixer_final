@@ -25,6 +25,7 @@
                     background-size: cover;       /* fill entire screen */
                     background-repeat: no-repeat; /* no tiling */
                     background-position: center;  /* center the image */
+                    background-attachment: fixed; /* fix the wallpaper */
                 }
                 .page-container {
                     max-width: 1000px;
@@ -813,7 +814,7 @@
                     </div>
                 </div>
             </div>
-
+            <jsp:include page="/pages/shared/translate.jsp" />
             <script>
                 function rateGuide(rating) {
                     <c:if test="${empty sessionScope.currentUser}">

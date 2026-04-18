@@ -17,53 +17,131 @@
                     background-repeat: no-repeat; /* no tiling */
                     background-position: center;  /* center the image */
                 }
+
+                .service-hero {
+                    position: relative;
+                    min-height: 55vh;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    text-align: center;
+                    padding: 130px 30px 70px;
+                }
+
+                .service-hero-content {
+                    position: relative;
+                    z-index: 1;
+                    width: 100%;
+                }
+
+                .service-hero-content h1 {
+                    font-size: 3rem;
+                    font-weight: 800;
+                    color: var(--foreground);
+                    margin-bottom: 12px;
+                    letter-spacing: -0.02em;
+                }
+
+                .service-slogan {
+                    font-size: 1.5rem;
+                    font-weight: 500;
+                    color: var(--foreground);
+                    margin-bottom: 15px;
+                }
+
+                .service-hero-content p {
+                    font-size: 1.15rem;
+                    color: var(--muted-foreground);
+                    margin-bottom: 36px;
+                }
+
+                .service-search-wrapper {
+                    position: relative;
+                    max-width: 800px;
+                    width: 100%;
+                    margin: 0 auto;
+                }
+
+                .service-search-form {
+                    display: flex;
+                    gap: 0;
+                    border-radius: var(--radius-lg);
+                    overflow: hidden;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+                    background: #fff;
+                }
+
+                .service-search-form input[type="text"],
+                .service-search-form select {
+                    flex: 1;
+                    padding: 16px 20px;
+                    border: none;
+                    border-right: 1px solid #eee;
+                    background: transparent;
+                    color: #111;
+                    font-size: 1rem;
+                    outline: none;
+                }
+
+                .service-search-form select {
+                    appearance: auto;
+                    cursor: pointer;
+                }
+
+                .service-search-form button {
+                    padding: 16px 24px;
+                    background: var(--primary);
+                    color: var(--primary-foreground);
+                    border: none;
+                    cursor: pointer;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    transition: opacity 0.2s;
+                    white-space: nowrap;
+                }
+
+                .service-search-form button:hover {
+                    opacity: 0.88;
+                }
             </style>
         </head>
 
         <body>
-            <div style="max-width: 1200px; margin: 100px auto 2rem; padding: 0 1rem;">
-                <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 1rem; color: var(--foreground);">Book a
-                    Technician</h1>
+            <div class="service-hero">
+                <div class="service-hero-content">
+                    <h1>Book a Technician</h1>
+                    <p>Find the best local professionals for all your home repair and maintenance needs</p>
 
-                <!-- Search and Filter Section -->
-                <div
-                    style="background: var(--card); padding: 1.5rem; border-radius: 0; margin-bottom: 2rem; box-shadow: var(--shadow-sm);">
-                    <form method="get" action="${pageContext.request.contextPath}/services">
-                        <div
-                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
-                            <div>
-                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Search</label>
-                                <input type="text" name="search" value="${searchQuery}" placeholder="Search services..."
-                                    style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 0; background: var(--input);">
-                            </div>
-                            <div>
-                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Category</label>
-                                <select name="category"
-                                    style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 0; background: var(--input);">
-                                    <option value="">All Categories</option>
-                                    <c:forEach var="cat" items="${categories}">
-                                        <option value="${cat.name}" ${selectedCategory==cat.name ? 'selected' : '' }>
-                                            ${cat.name}</option>
-                                    </c:forEach>
-                                </select>
-                            </div>
-                            <div>
-                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">City</label>
-                                <select name="city"
-                                    style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 0; background: var(--input);">
-                                    <option value="">All Cities</option>
-                                    <c:forEach var="city" items="${cities}">
-                                        <option value="${city}" ${selectedCity==city ? 'selected' : ''}>${city}</option>
-                                    </c:forEach>
-                                </select>
-                            </div>
-                        </div>
-                        <button type="submit"
-                            style="background: var(--primary); color: var(--primary-foreground); padding: 0.5rem 1.5rem; border: none; border-radius: 0; font-weight: 600; cursor: pointer;">
-                            Search
-                        </button>
-                    </form>
+                    <div class="service-search-wrapper">
+                        <form class="service-search-form" method="get" action="${pageContext.request.contextPath}/services">
+                            <input type="text" name="search" value="${searchQuery}" placeholder="Search services...">
+                            <select name="category">
+                                <option value="">All Categories</option>
+                                <c:forEach var="cat" items="${categories}">
+                                    <option value="${cat.name}" ${selectedCategory==cat.name ? 'selected' : '' }>
+                                        ${cat.name}
+                                    </option>
+                                </c:forEach>
+                            </select>
+                            <select name="city">
+                                <option value="">All Cities</option>
+                                <c:forEach var="city" items="${cities}">
+                                    <option value="${city}" ${selectedCity==city ? 'selected' : ''}>${city}</option>
+                                </c:forEach>
+                            </select>
+                            <button type="submit">
+                                <i class="ph ph-magnifying-glass"></i> Search
+                            </button>
+                        </form>
+                    </div>
                 </div>
+            </div>
+
+            <div style="max-width: 1200px; margin: 0 auto 2rem; padding: 0 1rem;">
 
                 <!-- Services Grid -->
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem;">

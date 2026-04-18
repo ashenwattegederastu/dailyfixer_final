@@ -252,7 +252,7 @@
                     </c:otherwise>
                 </c:choose>
             </div>
-
+            <jsp:include page="/pages/shared/translate.jsp" />
 
             <script>
                 // Dynamic category data loaded from server

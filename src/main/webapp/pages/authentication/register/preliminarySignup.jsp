@@ -11,6 +11,7 @@
                     display: flex;
                     flex-direction: column;
                     min-height: 100vh;
+                    background-color: transparent !important;
                 }
 
                 .main-content {
@@ -21,6 +22,7 @@
                     justify-content: center;
                     flex-direction: column;
                     padding: 40px 20px;
+                    background: transparent !important;
                 }
 
                 .role-cards {
@@ -34,16 +36,17 @@
                 }
 
                 .role-card {
-                    background-color: var(--card);
-                    color: var(--card-foreground);
-                    border: 1px solid var(--border);
-                    border-radius: var(--radius-lg);
-                    padding: 30px;
+                    background: rgba(255, 255, 255, 0.1);
+                    backdrop-filter: blur(16px);
+                    -webkit-backdrop-filter: blur(16px);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    /*border-radius: 24px;*/
+                    padding: 40px 30px;
                     text-align: center;
                     cursor: pointer;
-                    transition: all 0.3s ease;
-                    width: 200px;
-                    box-shadow: var(--shadow-md);
+                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    width: 210px;
+                    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
                     display: flex;
                     flex-direction: column;
                     align-items: center;
@@ -51,55 +54,74 @@
                 }
 
                 .role-card:hover {
-                    transform: translateY(-5px);
-                    box-shadow: var(--shadow-xl);
-                    border-color: var(--primary);
+                    transform: translateY(-10px);
+                    box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.4);
+                    background: rgba(255, 255, 255, 0.15);
+                    border-color: rgba(255, 255, 255, 0.4);
                 }
 
                 .role-card h3 {
-                    margin-top: 20px;
+                    margin-top: 24px;
                     font-size: 1.2rem;
                     font-weight: 600;
+                    color: #ffffff;
+                    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
                 }
 
                 .role-card .role-icon {
-                    width: 100px;
-                    height: 100px;
+                    width: 110px;
+                    height: 110px;
                     border-radius: 50%;
-                    background-color: var(--secondary);
+                    background: rgba(255, 255, 255, 0.95);
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    transition: background-color 0.3s ease;
+                    transition: all 0.3s ease;
                 }
 
                 .role-card:hover .role-icon {
-                    background-color: var(--primary);
+                    background: #ffffff;
+                    transform: scale(1.05);
+                    box-shadow: 0 8px 25px rgba(255,255,255,0.3);
                 }
 
                 .role-card .role-icon img {
                     width: 50px;
                     height: 50px;
-                    filter: grayscale(100%);
-                    transition: filter 0.3s ease;
+                    transition: transform 0.3s ease;
                 }
 
                 .role-card:hover .role-icon img {
-                    filter: brightness(0) invert(1);
+                    transform: scale(1.1);
+                }
+
+                .auth-bg-video {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    z-index: -1;
+                    pointer-events: none;
                 }
 
                 .page-title {
-                    font-size: 2.5rem;
-                    font-weight: 700;
-                    margin-bottom: 10px;
+                    font-size: 3.5rem;
+                    font-weight: 800;
+                    margin-bottom: 5px;
                     text-align: center;
-                    color: var(--foreground);
+                    color: #ffffff;
+                    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+                    letter-spacing: -0.02em;
                 }
 
                 .page-subtitle {
-                    color: var(--muted-foreground);
+                    color: rgba(255, 255, 255, 0.85);
                     text-align: center;
-                    font-size: 1.1rem;
+                    font-size: 1.2rem;
+                    text-shadow: 0 1px 5px rgba(0,0,0,0.5);
                 }
 
                 .bottom-actions {
@@ -110,34 +132,40 @@
                 }
 
                 .action-link {
-                    color: var(--muted-foreground);
+                    color: rgba(255, 255, 255, 0.9);
                     text-decoration: none;
-                    padding: 10px 20px;
-                    border-radius: var(--radius-md);
-                    background: var(--muted);
-                    transition: all 0.2s ease;
+                    padding: 14px 28px;
+                    /*border-radius: 50px;*/
+                    background: rgba(0, 0, 0, 0.3);
+                    backdrop-filter: blur(10px);
+                    -webkit-backdrop-filter: blur(10px);
+                    border: 1px solid rgba(255, 255, 255, 0.15);
+                    transition: all 0.3s ease;
                     font-weight: 500;
+                    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
                 }
 
                 .action-link:hover {
-                    background: var(--primary);
-                    color: var(--primary-foreground);
+                    background: rgba(255, 255, 255, 0.2);
+                    color: #ffffff;
+                    border-color: rgba(255, 255, 255, 0.4);
+                    transform: translateY(-2px);
                 }
 
                 .action-link strong {
-                    color: var(--foreground);
-                }
-
-                .action-link:hover strong {
-                    color: var(--primary-foreground);
+                    color: #ffffff;
+                    font-weight: 700;
                 }
             </style>
         </head>
 
         <body>
+            <video autoplay muted loop playsinline class="auth-bg-video">
+                <source src="${pageContext.request.contextPath}/assets/images/backgrounds/auth.mp4" type="video/mp4">
+            </video>
 
             <div class="main-content">
-                <h1 class="page-title">Join Daily Fixer</h1>
+                <h1 class="page-title">Join DailyFixer</h1>
                 <p class="page-subtitle">Choose your role to get started</p>
 
                 <div class="role-cards">

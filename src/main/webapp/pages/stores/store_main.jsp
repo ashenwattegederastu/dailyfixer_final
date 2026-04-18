@@ -20,58 +20,106 @@
         .page-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 100px 30px 50px;
+            padding: 30px 30px 50px;
         }
 
-        .page-header {
-            margin-bottom: 30px;
-        }
-
-        .page-header h1 {
-            font-size: 2.2rem;
-            color: var(--foreground);
-            margin-bottom: 10px;
-        }
-
-        .page-header p {
-            color: var(--muted-foreground);
-        }
-
-        .filters-section {
-            background: var(--card);
-            padding: 20px;
-            border-radius: var(--radius-lg);
-            margin-bottom: 30px;
-            border: 1px solid var(--border);
-        }
-
-        .filters-form {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            align-items: flex-end;
-        }
-
-        .filter-group {
-            flex: 1;
-            min-width: 200px;
+        .store-hero {
             position: relative;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 130px 30px 30px;
         }
+
+        .store-hero-content {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+
+        .store-hero-content h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--foreground);
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .store-slogan {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--foreground);
+            margin-bottom: 15px;
+        }
+
+        .store-hero-content p {
+            font-size: 1.15rem;
+            color: var(--muted-foreground);
+            margin-bottom: 36px;
+        }
+
+        .store-search-wrapper {
+            position: relative;
+            max-width: 580px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .store-search-form {
+            display: flex;
+            gap: 0;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+        }
+
+        .store-search-form input[type="text"] {
+            flex: 1;
+            padding: 16px 20px;
+            border: none;
+            background: #ffffff;
+            color: #111;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .store-search-form button {
+            padding: 16px 24px;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+
+        .store-search-form button:hover {
+            opacity: 0.88;
+        }
+
+
 
         .suggestions-dropdown {
             position: absolute;
-            top: 100%;
+            top: calc(100% + 4px);
             left: 0;
             right: 0;
             background: var(--card);
-            border: 1px solid var(--border);
-            border-top: none;
-            border-radius: 0 0 var(--radius-md) var(--radius-md);
-            box-shadow: var(--shadow-lg);
+            border-radius: var(--radius-md);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             z-index: 1000;
             max-height: 320px;
             overflow-y: auto;
             display: none;
+            text-align: left;
         }
 
         .suggestion-item {
@@ -112,35 +160,7 @@
             color: var(--muted-foreground);
         }
 
-        .filter-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            color: var(--foreground);
-            font-size: 0.9rem;
-        }
 
-        .filter-group input,
-        .filter-group select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 2px solid var(--border);
-            border-radius: var(--radius-md);
-            background: var(--input);
-            color: var(--foreground);
-            font-size: 0.95rem;
-        }
-        
-        .filter-group input:focus,
-        .filter-group select:focus {
-            outline: none;
-            border-color: var(--ring);
-        }
-
-        .filter-buttons {
-            display: flex;
-            gap: 10px;
-        }
 
         .category-section, .suggested-section {
             margin-top: 50px;
@@ -254,25 +274,24 @@
 <body>
 <jsp:include page="/pages/shared/header.jsp" />
 
-<div class="page-container">
-    <div class="page-header">
+<div class="store-hero">
+    <div class="store-hero-content">
         <h1>Parts & Tools Store</h1>
         <p>Find the right parts and tools for your daily fixes</p>
-    </div>
 
-    <!-- Search Section -->
-    <div class="filters-section">
-        <form class="filters-form" action="${pageContext.request.contextPath}/search" method="get">
-            <div class="filter-group">
-                <label for="search-input"><i class="ph ph-magnifying-glass"></i> Search</label>
+        <div class="store-search-wrapper">
+            <form class="store-search-form" action="${pageContext.request.contextPath}/search" method="get">
                 <input type="text" name="q" id="search-input" placeholder="Search for a part/item or category" autocomplete="off" required>
-                <div id="suggestions-dropdown" class="suggestions-dropdown" role="listbox" aria-label="Search suggestions"></div>
-            </div>
-            <div class="filter-buttons">
-                <button type="submit" class="btn-primary"><i class="ph ph-magnifying-glass"></i> Search</button>
-            </div>
-        </form>
+                <button type="submit">
+                    <i class="ph ph-magnifying-glass"></i> Search
+                </button>
+            </form>
+            <div id="suggestions-dropdown" class="suggestions-dropdown" role="listbox" aria-label="Search suggestions"></div>
+        </div>
     </div>
+</div>
+
+<div class="page-container">
 
     <!-- Category Section -->
     <section class="category-section">

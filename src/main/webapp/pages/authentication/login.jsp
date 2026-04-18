@@ -36,9 +36,27 @@
         .toggle-btn:hover {
             color: #000;
         }
+        .auth-bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .login-container, body {
+            background-color: transparent !important;
+        }
     </style>
 </head>
 <body>
+
+<video autoplay muted loop playsinline class="auth-bg-video">
+    <source src="${pageContext.request.contextPath}/assets/images/backgrounds/auth.mp4" type="video/mp4">
+</video>
 
 <div class="login-container">
     <div class="login-card">

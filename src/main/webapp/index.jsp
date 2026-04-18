@@ -37,7 +37,7 @@
                         <source src="${pageContext.request.contextPath}/assets/images/index/hero_main.mp4" type="video/mp4">
                     </video>
                     <div class="hero-content">
-                        <h1>Join a community that helps you fix, learn, and restore what matters.</h1>
+                        <h1>Fix, Learn, and Restore what matters.</h1>
                         <p>Connect with thousands of people who share your passion for fixing and learning.</p>
                         <c:choose>
                             <c:when test="${not empty sessionScope.currentUser}">
