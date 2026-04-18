@@ -156,6 +156,113 @@
             font-size: .8rem; font-weight: 600; text-transform: capitalize;
             background: var(--secondary); color: var(--secondary-foreground);
         }
+
+        /* ── Report generation panel ── */
+        .report-panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 36px;
+        }
+        .report-panel h2 {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+        .report-fields {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .report-fields label {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: .9rem;
+            font-weight: 600;
+            color: var(--foreground);
+        }
+        .report-fields input[type="date"] {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--background);
+            color: var(--foreground);
+            font-size: .9rem;
+            font-family: inherit;
+        }
+        .report-sections {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .report-sections .section-label {
+            font-weight: 600;
+            font-size: .9rem;
+            color: var(--foreground);
+        }
+        .report-sections label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: .9rem;
+            color: var(--foreground);
+            cursor: pointer;
+        }
+        .report-error {
+            display: block;
+            color: var(--destructive);
+            font-size: .87rem;
+            font-weight: 600;
+            min-height: 1.3em;
+            margin-bottom: 10px;
+        }
+        .report-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .btn-download {
+            padding: 9px 20px;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: .9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity .2s;
+            font-family: inherit;
+        }
+        .btn-download:hover { opacity: .85; }
+        .btn-print {
+            padding: 8px 18px;
+            background: var(--secondary);
+            color: var(--secondary-foreground);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: .9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity .2s;
+            font-family: inherit;
+        }
+        .btn-print:hover { opacity: .8; }
+
+        /* ── Print styles ── */
+        @media print {
+            nav, .sidebar, .range-bar, .action-grid, .report-panel, .btn-print { display: none !important; }
+            .main-content { margin-left: 0 !important; }
+            .charts-row, .breakdown-row { grid-template-columns: 1fr 1fr; }
+            .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+            body { background: white; }
+        }
     </style>
 </head>
 
@@ -164,9 +271,12 @@
     <jsp:include page="/pages/dashboards/admindash/sidebar.jsp" />
 
     <main class="main-content">
-        <div class="dashboard-header">
-            <h1>Dashboard</h1>
-            <p>Platform Overview &amp; Analytics</p>
+        <div class="dashboard-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+            <div>
+                <h1>Dashboard</h1>
+                <p>Platform Overview &amp; Analytics</p>
+            </div>
+            <button class="btn-print" onclick="window.print()">Print / Save as PDF</button>
         </div>
 
         <!-- ════════ KPI Cards ════════ -->
@@ -348,6 +458,36 @@
             </div>
         </div>
 
+        <!-- ════════ Report Generation ════════ -->
+        <div class="report-panel">
+            <h2>Generate Report</h2>
+            <form id="reportForm" method="GET"
+                  action="${pageContext.request.contextPath}/admin/report"
+                  target="_blank" novalidate>
+                <div class="report-fields">
+                    <label>
+                        Start Date
+                        <input type="date" name="startDate" id="reportStart">
+                    </label>
+                    <label>
+                        End Date
+                        <input type="date" name="endDate" id="reportEnd">
+                    </label>
+                </div>
+                <div class="report-sections">
+                    <span class="section-label">Include sections:</span>
+                    <label><input type="checkbox" name="sections" value="orders" checked> Orders</label>
+                    <label><input type="checkbox" name="sections" value="revenue" checked> Revenue</label>
+                    <label><input type="checkbox" name="sections" value="bookings" checked> Bookings</label>
+                    <label><input type="checkbox" name="sections" value="users" checked> New Users</label>
+                </div>
+                <span id="reportErr" class="report-error" role="alert"></span>
+                <div class="report-actions">
+                    <button type="submit" class="btn-download">Download CSV</button>
+                </div>
+            </form>
+        </div>
+
     </main>
 
     <%-- ══════ Build JS data payload for local chart renderer ══════ --%>
@@ -380,5 +520,75 @@
     };
     </script>
     <script src="${pageContext.request.contextPath}/assets/js/admin-dashboard-charts.js"></script>
+
+    <script>
+    (function () {
+        "use strict";
+
+        // ── Set today as the max for both date pickers and populate sensible defaults ──
+        var today = new Date();
+        var todayStr = today.toISOString().split("T")[0];
+
+        var startInput = document.getElementById("reportStart");
+        var endInput   = document.getElementById("reportEnd");
+
+        startInput.max = todayStr;
+        endInput.max   = todayStr;
+        endInput.value = todayStr;
+
+        var d30 = new Date(today);
+        d30.setDate(d30.getDate() - 30);
+        startInput.value = d30.toISOString().split("T")[0];
+
+        // ── Client-side validation ──
+        document.getElementById("reportForm").addEventListener("submit", function (e) {
+            var err   = document.getElementById("reportErr");
+            var start = startInput.value;
+            var end   = endInput.value;
+
+            err.textContent = "";
+
+            if (!start) {
+                err.textContent = "Start date is required.";
+                e.preventDefault();
+                startInput.focus();
+                return;
+            }
+            if (!end) {
+                err.textContent = "End date is required.";
+                e.preventDefault();
+                endInput.focus();
+                return;
+            }
+            if (start > todayStr) {
+                err.textContent = "Start date cannot be in the future.";
+                e.preventDefault();
+                startInput.focus();
+                return;
+            }
+            if (end < start) {
+                err.textContent = "End date must be on or after the start date.";
+                e.preventDefault();
+                endInput.focus();
+                return;
+            }
+
+            var diffMs   = new Date(end) - new Date(start);
+            var diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+            if (diffDays > 365) {
+                err.textContent = "Date range cannot exceed 365 days.";
+                e.preventDefault();
+                return;
+            }
+
+            var checked = document.querySelectorAll("input[name=\"sections\"]:checked");
+            if (checked.length === 0) {
+                err.textContent = "Select at least one report section.";
+                e.preventDefault();
+                return;
+            }
+        });
+    }());
+    </script>
 </body>
 </html>

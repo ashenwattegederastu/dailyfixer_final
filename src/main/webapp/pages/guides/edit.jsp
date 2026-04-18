@@ -200,24 +200,6 @@
                 </head>
 
                 <body>
-                    <!-- Navigation -->
-                    <nav id="navbar" class="public-nav">
-                        <div class="nav-container">
-                            <a href="${pageContext.request.contextPath}/index.jsp" class="logo">Daily Fixer</a>
-                            <ul class="nav-links">
-                                <li><a href="${pageContext.request.contextPath}/guides">View Repair Guides</a></li>
-                            </ul>
-                            <div class="nav-buttons">
-                                <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()">🌙
-                                    Dark</button>
-                                <a href="${pageContext.request.contextPath}/pages/dashboards/${sessionScope.currentUser.role}dash/${sessionScope.currentUser.role}dashmain.jsp"
-                                    class="btn-login" style="text-decoration: none; padding: 0.6rem 1.2rem;">
-                                    Hi, ${sessionScope.currentUser.firstName}
-                                </a>
-                                <a href="${pageContext.request.contextPath}/logout" class="btn-logout">Logout</a>
-                            </div>
-                        </div>
-                    </nav>
 
                     <div class="page-container">
                         <div class="page-header">

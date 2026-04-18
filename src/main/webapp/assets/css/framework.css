@@ -1100,7 +1100,17 @@ nav.public-nav .logo {
 
 /* Specific hero backgrounds */
 #hero1 {
-  background-image: url('../images/index/hero_community.png');
+  background-color: #000;
+}
+
+#hero1 .hero-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
 }
 
 #hero2 {

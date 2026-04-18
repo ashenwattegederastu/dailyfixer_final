@@ -33,6 +33,9 @@
 
                 <!-- Hero Section 1: Community -->
                 <section class="hero-section active" id="hero1">
+                    <video class="hero-video" autoplay muted loop playsinline>
+                        <source src="${pageContext.request.contextPath}/assets/images/index/hero_main.mp4" type="video/mp4">
+                    </video>
                     <div class="hero-content">
                         <h1>Join a community that helps you fix, learn, and restore what matters.</h1>
                         <p>Connect with thousands of people who share your passion for fixing and learning.</p>

@@ -11,9 +11,6 @@
 <body>
 
 <div class="login-container">
-    <div style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
-        <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙 Dark</button>
-    </div>
     <div class="login-card">
         <div class="login-header">
             <h1 class="login-title">Forgot Password</h1>

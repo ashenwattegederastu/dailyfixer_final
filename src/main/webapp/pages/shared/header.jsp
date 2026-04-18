@@ -55,7 +55,7 @@
                                 class="btn-login">
                                 <i class="ph ph-user"></i>
                             </a>
-                            <a href="${pageContext.request.contextPath}/logout" class="btn-logout"><i class="ph ph-sign-out"></i></a>
+                            <a href="#" class="btn-logout" id="logout-btn"><i class="ph ph-sign-out"></i></a>
                         </c:when>
                         <c:otherwise>
                             <!-- Guest -->
@@ -65,6 +65,19 @@
                 </div>
             </div>
         </nav>
+
+        <!-- Logout Confirmation Modal -->
+        <div id="logout-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9999; align-items:center; justify-content:center;">
+            <div style="background:#fff; border-radius:12px; padding:2rem 2.5rem; max-width:360px; width:90%; text-align:center; box-shadow:0 8px 32px rgba(0,0,0,0.18);">
+                <i class="ph ph-sign-out" style="font-size:2.5rem; color:#e74c3c; margin-bottom:0.75rem; display:block;"></i>
+                <h3 style="margin:0 0 0.5rem; font-family:'Plus Jakarta Sans',sans-serif; font-size:1.2rem;">Log out?</h3>
+                <p style="margin:0 0 1.5rem; color:#666; font-size:0.95rem;">Are you sure you want to log out of your account?</p>
+                <div style="display:flex; gap:0.75rem; justify-content:center;">
+                    <button id="logout-cancel" style="flex:1; padding:0.6rem 1rem; border:1px solid #ddd; border-radius:8px; background:#f5f5f5; cursor:pointer; font-size:0.95rem;">Cancel</button>
+                    <a id="logout-confirm" href="${pageContext.request.contextPath}/logout" style="flex:1; padding:0.6rem 1rem; border:none; border-radius:8px; background:#e74c3c; color:#fff; cursor:pointer; font-size:0.95rem; text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">Log out</a>
+                </div>
+            </div>
+        </div>
 
         <script>
             // Navbar scroll effect
@@ -84,5 +97,27 @@
             hamburger.addEventListener('click', () => {
                 navLinks.classList.toggle('active');
                 hamburger.classList.toggle('active');
+            });
+
+            // Logout confirmation modal
+            const logoutBtn = document.getElementById('logout-btn');
+            const logoutModal = document.getElementById('logout-modal');
+            const logoutCancel = document.getElementById('logout-cancel');
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    logoutModal.style.display = 'flex';
+                });
+            }
+
+            if (logoutCancel) {
+                logoutCancel.addEventListener('click', () => {
+                    logoutModal.style.display = 'none';
+                });
+            }
+
+            logoutModal.addEventListener('click', (e) => {
+                if (e.target === logoutModal) logoutModal.style.display = 'none';
             });
         </script>

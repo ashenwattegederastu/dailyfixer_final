@@ -295,9 +295,26 @@
                                             <h5><i class="ph ph-chart-bar"></i> Bar Chart View</h5>
                                             <canvas id="reputationChart" width="350" height="220"></canvas>
                                         </div>
-                                        <div class="chart-wrapper">
-                                            <h5><i class="ph ph-graph"></i> Radar Chart View</h5>
-                                            <canvas id="reputationRadarChart" width="350" height="280"></canvas>
+                                        <div class="chart-wrapper" style="text-align: left;">
+                                            <h5 style="text-align: center;"><i class="ph ph-lightning"></i> Quick Actions</h5>
+                                            <div class="quick-links">
+                                                <a href="${pageContext.request.contextPath}/guides/create"
+                                                    class="quick-link-btn">
+                                                    <span><i class="ph ph-pencil-ruler"></i></span> Create Guide
+                                                </a>
+                                                <a href="${pageContext.request.contextPath}/pages/guides/my-guides.jsp"
+                                                    class="quick-link-btn">
+                                                    <span><i class="ph ph-folder"></i></span> My Guides
+                                                </a>
+                                                <a href="${pageContext.request.contextPath}/pages/dashboards/volunteerdash/guideComments.jsp"
+                                                    class="quick-link-btn">
+                                                    <span><i class="ph ph-chat-circle-dots"></i></span> Comments
+                                                </a>
+                                                <a href="${pageContext.request.contextPath}/pages/dashboards/volunteerdash/myProfile.jsp"
+                                                    class="quick-link-btn">
+                                                    <span><i class="ph ph-user"></i></span> Profile
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -368,58 +385,33 @@
                                 </div>
                             </div>
 
-                            <div class="section-grid">
-                                <!-- Top Guides -->
-                                <div class="volunteer-stats">
-                                    <h3>Top Rated Guides</h3>
-                                    <% if (topGuides !=null && !topGuides.isEmpty()) { %>
-                                        <ul class="top-guides-list">
-                                            <% for (Guide g : topGuides) { %>
-                                                <li class="top-guide-item">
-                                                    <c:if test="<%= g.getMainImagePath() != null %>">
-                                                        <img src="${pageContext.request.contextPath}/<%= g.getMainImagePath() %>"
-                                                            class="top-guide-img" alt="Guide">
-                                                    </c:if>
-                                                    <div class="top-guide-info">
-                                                        <a href="${pageContext.request.contextPath}/ViewGuideServlet?id=<%= g.getGuideId() %>"
-                                                            class="top-guide-title">
-                                                            <%= g.getTitle() %>
-                                                        </a>
-                                                        <span class="top-guide-meta">
-                                                            <%= g.getMainCategory() %> • <%= g.getViewCount() %> views
-                                                        </span>
-                                                    </div>
-                                                </li>
-                                                <% } %>
-                                        </ul>
-                                        <% } else { %>
-                                            <p style="color: var(--muted-foreground); padding: 10px 0;">No guides
-                                                ratings yet.</p>
+                            <!-- Top Guides -->
+                            <div class="volunteer-stats">
+                                <h3>Top Rated Guides</h3>
+                                <% if (topGuides !=null && !topGuides.isEmpty()) { %>
+                                    <ul class="top-guides-list">
+                                        <% for (Guide g : topGuides) { %>
+                                            <li class="top-guide-item">
+                                                <c:if test="<%= g.getMainImagePath() != null %>">
+                                                    <img src="${pageContext.request.contextPath}/<%= g.getMainImagePath() %>"
+                                                        class="top-guide-img" alt="Guide">
+                                                </c:if>
+                                                <div class="top-guide-info">
+                                                    <a href="${pageContext.request.contextPath}/ViewGuideServlet?id=<%= g.getGuideId() %>"
+                                                        class="top-guide-title">
+                                                        <%= g.getTitle() %>
+                                                    </a>
+                                                    <span class="top-guide-meta">
+                                                        <%= g.getMainCategory() %> • <%= g.getViewCount() %> views
+                                                    </span>
+                                                </div>
+                                            </li>
                                             <% } %>
-                                </div>
-
-                                <!-- Quick Actions -->
-                                <div class="volunteer-stats">
-                                    <h3>Quick Actions</h3>
-                                    <div class="quick-links">
-                                        <a href="${pageContext.request.contextPath}/guides/create"
-                                            class="quick-link-btn">
-                                            <span><i class="ph ph-pencil-ruler"></i></span> Create Guide
-                                        </a>
-                                        <a href="${pageContext.request.contextPath}/pages/guides/my-guides.jsp"
-                                            class="quick-link-btn">
-                                            <span><i class="ph ph-folder"></i></span> My Guides
-                                        </a>
-                                        <a href="${pageContext.request.contextPath}/pages/dashboards/volunteerdash/guideComments.jsp"
-                                            class="quick-link-btn">
-                                            <span><i class="ph ph-chat-circle-dots"></i></span> Comments
-                                        </a>
-                                        <a href="${pageContext.request.contextPath}/pages/dashboards/volunteerdash/myProfile.jsp"
-                                            class="quick-link-btn">
-                                            <span><i class="ph ph-user"></i></span> Profile
-                                        </a>
-                                    </div>
-                                </div>
+                                    </ul>
+                                    <% } else { %>
+                                        <p style="color: var(--muted-foreground); padding: 10px 0;">No guides
+                                            ratings yet.</p>
+                                        <% } %>
                             </div>
                         </main>
                         <script

@@ -5,9 +5,11 @@ import com.dailyfixer.model.ProductSales;
 import com.dailyfixer.util.DBConnection;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -335,6 +337,100 @@ public class AdminDashboardDAO {
             e.printStackTrace();
         }
         return list;
+    }
+
+    // ── Date-range methods for report generation ──
+
+    public Map<String, Integer> getOrdersInRange(LocalDate start, LocalDate end) {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        String sql = "SELECT DATE(created_at) AS d, COUNT(*) AS cnt FROM orders " +
+                     "WHERE DATE(created_at) BETWEEN ? AND ? GROUP BY d ORDER BY d";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setDate(1, Date.valueOf(start));
+            ps.setDate(2, Date.valueOf(end));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) map.put(rs.getString("d"), rs.getInt("cnt"));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return map;
+    }
+
+    public Map<String, Double> getRevenueInRange(LocalDate start, LocalDate end) {
+        Map<String, Double> map = new LinkedHashMap<>();
+        String sql = "SELECT DATE(created_at) AS d, COALESCE(SUM(total_amount), 0) AS rev FROM orders " +
+                     "WHERE DATE(created_at) BETWEEN ? AND ? " +
+                     "AND status IN ('PAID','PROCESSING','OUT_FOR_DELIVERY','DELIVERED') " +
+                     "GROUP BY d ORDER BY d";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setDate(1, Date.valueOf(start));
+            ps.setDate(2, Date.valueOf(end));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) map.put(rs.getString("d"), rs.getDouble("rev"));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return map;
+    }
+
+    public Map<String, Integer> getBookingsInRange(LocalDate start, LocalDate end) {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        String sql = "SELECT DATE(created_at) AS d, COUNT(*) AS cnt FROM bookings " +
+                     "WHERE DATE(created_at) BETWEEN ? AND ? GROUP BY d ORDER BY d";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setDate(1, Date.valueOf(start));
+            ps.setDate(2, Date.valueOf(end));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) map.put(rs.getString("d"), rs.getInt("cnt"));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return map;
+    }
+
+    public Map<String, Integer> getNewUsersInRange(LocalDate start, LocalDate end) {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        String sql = "SELECT DATE(created_at) AS d, COUNT(*) AS cnt FROM users " +
+                     "WHERE DATE(created_at) BETWEEN ? AND ? GROUP BY d ORDER BY d";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setDate(1, Date.valueOf(start));
+            ps.setDate(2, Date.valueOf(end));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) map.put(rs.getString("d"), rs.getInt("cnt"));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return map;
+    }
+
+    public Map<String, Integer> getOrdersByStatusInRange(LocalDate start, LocalDate end) {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        String sql = "SELECT status, COUNT(*) AS cnt FROM orders " +
+                     "WHERE DATE(created_at) BETWEEN ? AND ? GROUP BY status ORDER BY cnt DESC";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setDate(1, Date.valueOf(start));
+            ps.setDate(2, Date.valueOf(end));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) map.put(rs.getString("status"), rs.getInt("cnt"));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return map;
+    }
+
+    public Map<String, Integer> getNewUsersByRoleInRange(LocalDate start, LocalDate end) {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        String sql = "SELECT role, COUNT(*) AS cnt FROM users " +
+                     "WHERE DATE(created_at) BETWEEN ? AND ? GROUP BY role ORDER BY cnt DESC";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setDate(1, Date.valueOf(start));
+            ps.setDate(2, Date.valueOf(end));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) map.put(rs.getString("role"), rs.getInt("cnt"));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return map;
     }
 
     private Order mapResultSetToOrder(ResultSet rs) throws SQLException {

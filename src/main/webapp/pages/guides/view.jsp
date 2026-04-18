@@ -113,6 +113,7 @@
                     display: flex;
                     align-items: center;
                     gap: 10px;
+                    font-size: 1.15rem;
                 }
 
                 .requirements-list li:last-child {
@@ -156,11 +157,31 @@
                     color: var(--foreground);
                 }
 
+                .step-content {
+                    display: flex;
+                    gap: 25px;
+                    align-items: flex-start;
+                }
+
+                @media (max-width: 768px) {
+                    .step-content {
+                        flex-direction: column;
+                        gap: 15px;
+                    }
+                }
+
                 .step-images {
                     display: flex;
                     gap: 15px;
                     overflow-x: auto;
-                    margin-bottom: 15px;
+                    flex-shrink: 0;
+                    max-width: 50%;
+                }
+
+                @media (max-width: 768px) {
+                    .step-images {
+                        max-width: 100%;
+                    }
                 }
 
                 .step-image {
@@ -175,6 +196,8 @@
                     color: var(--foreground);
                     line-height: 1.7;
                     white-space: pre-wrap;
+                    font-size: 1.15rem;
+                    flex: 1;
                 }
 
                 .video-embed {
@@ -617,15 +640,17 @@
                                     <span class="step-number">${status.index + 1}</span>
                                     <h3 class="step-title">${step.stepTitle}</h3>
                                 </div>
-                                <c:if test="${not empty step.imagePaths}">
-                                    <div class="step-images">
-                                        <c:forEach var="imgPath" items="${step.imagePaths}">
-                                            <img src="${pageContext.request.contextPath}/${imgPath}" alt="Step image"
-                                                class="step-image">
-                                        </c:forEach>
-                                    </div>
-                                </c:if>
-                                <div class="step-body">${step.stepBody}</div>
+                                <div class="step-content">
+                                    <c:if test="${not empty step.imagePaths}">
+                                        <div class="step-images">
+                                            <c:forEach var="imgPath" items="${step.imagePaths}">
+                                                <img src="${pageContext.request.contextPath}/${imgPath}" alt="Step image"
+                                                    class="step-image">
+                                            </c:forEach>
+                                        </div>
+                                    </c:if>
+                                    <div class="step-body">${step.stepBody}</div>
+                                </div>
                             </div>
                         </c:forEach>
                     </div>

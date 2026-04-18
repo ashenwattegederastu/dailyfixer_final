@@ -95,13 +95,27 @@
                     </div>
 
                     <div class="sidebar-actions">
-                        <a href="${pageContext.request.contextPath}/logout" class="action-btn logout-btn">
+                        <a href="#" id="sidebar-logout-btn" class="action-btn logout-btn">
                             <i class="ph ph-sign-out"></i>
                             Log Out
                         </a>
                     </div>
                 </div>
             </aside>
+
+            <!-- Logout Confirmation Modal -->
+            <div id="sidebar-logout-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9999; align-items:center; justify-content:center;">
+                <div style="background:#fff; border-radius:12px; padding:2rem 2.5rem; max-width:360px; width:90%; text-align:center; box-shadow:0 8px 32px rgba(0,0,0,0.18);">
+                    <i class="ph ph-sign-out" style="font-size:2.5rem; color:#e74c3c; margin-bottom:0.75rem; display:block;"></i>
+                    <h3 style="margin:0 0 0.5rem; font-family:'Plus Jakarta Sans',sans-serif; font-size:1.2rem;">Log out?</h3>
+                    <p style="margin:0 0 1.5rem; color:#666; font-size:0.95rem;">Are you sure you want to log out of your account?</p>
+                    <div style="display:flex; gap:0.75rem; justify-content:center;">
+                        <button id="sidebar-logout-cancel" style="flex:1; padding:0.6rem 1rem; border:1px solid #ddd; border-radius:8px; background:#f5f5f5; cursor:pointer; font-size:0.95rem;">Cancel</button>
+                        <a id="sidebar-logout-confirm" href="${pageContext.request.contextPath}/logout" style="flex:1; padding:0.6rem 1rem; border:none; border-radius:8px; background:#e74c3c; color:#fff; cursor:pointer; font-size:0.95rem; text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">Log out</a>
+                    </div>
+                </div>
+            </div>
+
             <script>
                 // Highlight active navigation item based on current URL
                 document.addEventListener('DOMContentLoaded', function () {
@@ -146,6 +160,29 @@
 
                         mobileToggle.addEventListener('click', toggleSidebar);
                         overlay.addEventListener('click', toggleSidebar);
+                    }
+                });
+
+                // Logout confirmation modal
+                document.addEventListener('DOMContentLoaded', function () {
+                    const sidebarLogoutBtn = document.getElementById('sidebar-logout-btn');
+                    const sidebarLogoutModal = document.getElementById('sidebar-logout-modal');
+                    const sidebarLogoutCancel = document.getElementById('sidebar-logout-cancel');
+                    if (sidebarLogoutBtn) {
+                        sidebarLogoutBtn.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            sidebarLogoutModal.style.display = 'flex';
+                        });
+                    }
+                    if (sidebarLogoutCancel) {
+                        sidebarLogoutCancel.addEventListener('click', function () {
+                            sidebarLogoutModal.style.display = 'none';
+                        });
+                    }
+                    if (sidebarLogoutModal) {
+                        sidebarLogoutModal.addEventListener('click', function (e) {
+                            if (e.target === sidebarLogoutModal) sidebarLogoutModal.style.display = 'none';
+                        });
                     }
                 });
             </script>

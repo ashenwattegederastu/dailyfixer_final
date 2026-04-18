@@ -16,7 +16,7 @@
                     <title>
                         <%= isEditMode ? "Edit" : "Create" %> Diagnostic Tree | Admin Dashboard
                     </title>
-                    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+                    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
                     rel="stylesheet">
                     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/framework.css">
                     <style>
