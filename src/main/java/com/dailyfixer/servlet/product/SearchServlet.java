@@ -4,6 +4,7 @@ import com.dailyfixer.dao.ProductDAO;
 import com.dailyfixer.dao.StoreDAO;
 import com.dailyfixer.model.Product;
 import com.dailyfixer.util.MarketplaceLocationSession;
+import com.dailyfixer.util.ProductJsonUtil;
 import com.dailyfixer.util.PurchaseRadiusFilter;
 
 import jakarta.servlet.*;
@@ -11,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +62,7 @@ public class SearchServlet extends HttpServlet {
                         // Exact category match - highest priority
                         exactMatch = cat;
                         break;
-                    } else if (lowerCat.contains(lowerSearchTerm) || lowerSearchTerm.contains(lowerCat)) {
+                    } else if (lowerCat.contains(lowerSearchTerm)) {
                         // Partial category match - store first match
                         if (partialMatch == null) {
                             partialMatch = cat;
@@ -132,12 +134,31 @@ public class SearchServlet extends HttpServlet {
                 }
             }
 
+            String resolvedCategory = category != null ? category : "Search Results";
+            boolean radiusEmpty = Boolean.TRUE.equals(request.getAttribute("purchaseRadiusFilteredEmpty"));
+
+            // Detect AJAX: Accept header or explicit format=json parameter
+            String accept = request.getHeader("Accept");
+            boolean isAjax = (accept != null && accept.contains("application/json"))
+                    || "json".equals(request.getParameter("format"));
+
+            if (isAjax) {
+                String json = ProductJsonUtil.toJson(products, radiusEmpty,
+                        resolvedCategory, searchTerm, searchType);
+                response.setContentType("application/json;charset=UTF-8");
+                response.setCharacterEncoding("UTF-8");
+                try (PrintWriter out = response.getWriter()) {
+                    out.print(json);
+                }
+                return;
+            }
+
             // Set attributes for the JSP
             request.setAttribute("products", products);
-            request.setAttribute("category", category != null ? category : "Search Results");
+            request.setAttribute("category", resolvedCategory);
             request.setAttribute("searchTerm", searchTerm);
             request.setAttribute("searchType", searchType);
-            
+
             // Forward to category_products.jsp (reuse the same display page)
             request.getRequestDispatcher("/pages/stores/category_products.jsp")
                     .forward(request, response);

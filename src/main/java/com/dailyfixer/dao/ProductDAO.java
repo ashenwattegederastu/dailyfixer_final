@@ -394,6 +394,31 @@ public class ProductDAO {
     }
 
     /**
+     * Returns up to {@code limit} distinct product names that contain the given term,
+     * ordered so names that start with the term appear first.
+     */
+    public List<String> getProductNameSuggestions(String term, int limit) throws Exception {
+        List<String> names = new ArrayList<>();
+        String clean = term.trim().toLowerCase();
+        if (clean.isEmpty()) return names;
+        String sql = "SELECT DISTINCT name FROM products " +
+                     "WHERE LOWER(name) LIKE ? " +
+                     "ORDER BY CASE WHEN LOWER(name) LIKE ? THEN 0 ELSE 1 END, name " +
+                     "LIMIT ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, "%" + clean + "%");
+            ps.setString(2, clean + "%");
+            ps.setInt(3, limit);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                names.add(rs.getString("name"));
+            }
+        }
+        return names;
+    }
+
+    /**
      * Get related products (products in the same category as the given product)
      */
     public List<Product> getRelatedProducts(int productId, String category, int limit) throws Exception {

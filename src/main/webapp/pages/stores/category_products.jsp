@@ -435,6 +435,10 @@
 
         <!-- Products Grid Panel -->
         <div class="products-panel">
+            <div id="search-loading" style="display:none; text-align:center; padding:40px 20px; color:var(--muted-foreground);" aria-live="polite">
+                <i class="ph ph-circle-notch" style="font-size:1.8rem;"></i>
+                <p style="margin-top:10px;">Searching...</p>
+            </div>
             <div class="product-grid" id="product-grid">
                 <% if (products != null && !products.isEmpty()) {
                     DiscountDAO discountDAO = new DiscountDAO();
@@ -545,6 +549,7 @@
     var autocomplete;
     var selectedLat = null;
     var selectedLng = null;
+    var productCards = [];
 
     var urlParams = new URLSearchParams(window.location.search);
     var currentLat = urlParams.get('lat') || '<%= sessionLat != null ? sessionLat : "" %>';
@@ -672,6 +677,139 @@
         statusDiv.className = 'location-status' + (isActive ? ' active' : '');
     }
 
+    function showLoading(show) {
+        var el = document.getElementById('search-loading');
+        if (el) el.style.display = show ? 'block' : 'none';
+    }
+
+    function doAjaxSearch(q) {
+        if (q.length > 0 && q.length < 2) return;
+        showLoading(true);
+        var url;
+        if (q.length === 0) {
+            if (!isSearchPage()) {
+                url = ctxPath + '/products?category=' + encodeURIComponent(getNavCategory()) + '&format=json';
+            } else {
+                showLoading(false);
+                return;
+            }
+        } else {
+            url = ctxPath + '/search?q=' + encodeURIComponent(q) + '&format=json';
+        }
+        if (selectedLat !== null && selectedLng !== null) {
+            url += '&lat=' + selectedLat + '&lng=' + selectedLng;
+        }
+        fetch(url, { headers: { 'Accept': 'application/json' } })
+            .then(function(r) {
+                if (!r.ok) throw new Error('Network error');
+                return r.json();
+            })
+            .then(function(data) {
+                showLoading(false);
+                renderProducts(data.products, data.purchaseRadiusFilteredEmpty);
+                if (data.category) {
+                    var h1 = document.querySelector('.page-header h1');
+                    if (h1) h1.textContent = data.category;
+                }
+            })
+            .catch(function() {
+                showLoading(false);
+            });
+    }
+
+    function renderProducts(products, purchaseRadiusFilteredEmpty) {
+        var grid = document.getElementById('product-grid');
+        grid.innerHTML = '';
+        productCards = [];
+
+        if (!products || products.length === 0) {
+            var noRes = document.createElement('div');
+            noRes.id = 'no-products';
+            noRes.className = 'no-results';
+            var h = document.createElement('h3');
+            var p = document.createElement('p');
+            if (purchaseRadiusFilteredEmpty) {
+                h.textContent = 'No products in your area';
+                p.textContent = 'No stores with products within 10 km of your saved location. Pick another point on the map or clear location to see all products.';
+            } else {
+                h.textContent = 'No Products Found';
+                p.textContent = 'No products available matching your search criteria.';
+            }
+            noRes.appendChild(h);
+            noRes.appendChild(p);
+            grid.appendChild(noRes);
+            return;
+        }
+
+        products.forEach(function(p) {
+            var card = document.createElement('div');
+            card.className = 'product-card';
+            card.dataset.price = p.finalPrice;
+            card.dataset.name = (p.name || '').toLowerCase();
+
+            var imageWrap = document.createElement('div');
+            imageWrap.className = 'product-card-image-wrap';
+
+            if (p.showDiscount && p.discountBadgeText) {
+                var badge = document.createElement('span');
+                badge.className = 'product-discount-badge';
+                badge.title = p.discountTitle || '';
+                badge.textContent = p.discountBadgeText;
+                imageWrap.appendChild(badge);
+            }
+
+            var img = document.createElement('img');
+            img.src = (p.imagePath && p.imagePath.length > 0)
+                ? ctxPath + '/' + p.imagePath
+                : ctxPath + '/assets/images/tools.png';
+            img.alt = p.name || '';
+            img.className = 'product-card-image';
+            imageWrap.appendChild(img);
+
+            var body = document.createElement('div');
+            body.className = 'product-card-body';
+
+            var title = document.createElement('h3');
+            title.className = 'product-card-title';
+            title.textContent = p.name || '';
+
+            var priceEl = document.createElement('p');
+            priceEl.className = 'product-card-price';
+            if (p.showDiscount) {
+                var oldSpan = document.createElement('span');
+                oldSpan.className = 'product-price-old';
+                oldSpan.textContent = 'Rs. ' + parseFloat(p.originalPrice).toFixed(2);
+                var saleSpan = document.createElement('span');
+                saleSpan.className = 'product-price-sale';
+                saleSpan.textContent = 'Rs. ' + parseFloat(p.finalPrice).toFixed(2);
+                priceEl.appendChild(oldSpan);
+                priceEl.appendChild(saleSpan);
+            } else {
+                priceEl.textContent = 'Rs. ' + parseFloat(p.finalPrice).toFixed(2);
+            }
+
+            var desc = document.createElement('p');
+            desc.className = 'product-card-desc';
+            desc.textContent = p.description || '';
+
+            var link = document.createElement('a');
+            link.href = ctxPath + '/product_details?productId=' + p.productId;
+            link.className = 'btn-primary btn-block';
+            link.style.textAlign = 'center';
+            link.textContent = 'View Details';
+
+            body.appendChild(title);
+            body.appendChild(priceEl);
+            body.appendChild(desc);
+            body.appendChild(link);
+
+            card.appendChild(imageWrap);
+            card.appendChild(body);
+            grid.appendChild(card);
+            productCards.push(card);
+        });
+    }
+
     window.addEventListener('load', function () {
         var searchInput = document.getElementById('search-input');
         var sortSelect = document.getElementById('sort-products');
@@ -679,7 +817,7 @@
         var clearLocationBtn = document.getElementById('btn-clear-location');
         var setLocationBtn = document.getElementById('btn-set-location');
         var productGrid = document.getElementById('product-grid');
-        var productCards = Array.from(productGrid.getElementsByClassName('product-card'));
+        productCards = Array.from(productGrid.getElementsByClassName('product-card'));
 
         function applySort() {
             var sortVal = sortSelect ? sortSelect.value : 'default';
@@ -743,6 +881,26 @@
         if (clearLocationBtn) {
             clearLocationBtn.addEventListener('click', function () {
                 clearLocationNavigate();
+            });
+        }
+
+        // AJAX search: intercept form submit
+        var searchForm = document.querySelector('.filters-form');
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                doAjaxSearch((searchInput ? searchInput.value : '').trim());
+            });
+        }
+
+        // AJAX search: live debounced search on input (fires 350ms after typing stops)
+        var searchDebounce = null;
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchDebounce);
+                searchDebounce = setTimeout(function() {
+                    doAjaxSearch(searchInput.value.trim());
+                }, 350);
             });
         }
     });

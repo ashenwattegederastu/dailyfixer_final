@@ -55,6 +55,61 @@
         .filter-group {
             flex: 1;
             min-width: 200px;
+            position: relative;
+        }
+
+        .suggestions-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 var(--radius-md) var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            max-height: 320px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 10px 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.92rem;
+            color: var(--foreground);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .suggestion-item:last-child { border-bottom: none; }
+
+        .suggestion-item:hover,
+        .suggestion-item.active {
+            background: var(--muted);
+        }
+
+        .suggestion-pill {
+            font-size: 0.7rem;
+            padding: 2px 7px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            flex-shrink: 0;
+        }
+
+        .suggestion-pill-category {
+            background: color-mix(in srgb, var(--primary) 15%, transparent);
+            color: var(--primary);
+        }
+
+        .suggestion-pill-product {
+            background: var(--secondary);
+            color: var(--muted-foreground);
         }
 
         .filter-group label {
@@ -210,7 +265,8 @@
         <form class="filters-form" action="${pageContext.request.contextPath}/search" method="get">
             <div class="filter-group">
                 <label for="search-input"><i class="ph ph-magnifying-glass"></i> Search</label>
-                <input type="text" name="q" id="search-input" placeholder="Search for a part/item or category" required>
+                <input type="text" name="q" id="search-input" placeholder="Search for a part/item or category" autocomplete="off" required>
+                <div id="suggestions-dropdown" class="suggestions-dropdown" role="listbox" aria-label="Search suggestions"></div>
             </div>
             <div class="filter-buttons">
                 <button type="submit" class="btn-primary"><i class="ph ph-magnifying-glass"></i> Search</button>
@@ -284,5 +340,125 @@
         </div>
     </section>
 </div>
+<script>
+(function () {
+    var ctxPath = '${pageContext.request.contextPath}';
+    var input      = document.getElementById('search-input');
+    var dropdown   = document.getElementById('suggestions-dropdown');
+    var activeIdx  = -1;
+    var items      = [];
+    var debounce   = null;
+
+    function fetchSuggestions(q) {
+        if (q.length < 2) { hideDrop(); return; }
+        fetch(ctxPath + '/search-suggest?q=' + encodeURIComponent(q), {
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(function(r) { return r.ok ? r.json() : { suggestions: [] }; })
+        .then(function(data) { renderDrop(data.suggestions || []); })
+        .catch(function() { hideDrop(); });
+    }
+
+    function renderDrop(suggestions) {
+        dropdown.innerHTML = '';
+        items = [];
+        activeIdx = -1;
+
+        if (suggestions.length === 0) { hideDrop(); return; }
+
+        suggestions.forEach(function(s, i) {
+            var el = document.createElement('div');
+            el.className = 'suggestion-item';
+            el.setAttribute('role', 'option');
+            el.setAttribute('data-idx', i);
+
+            var pill = document.createElement('span');
+            pill.className = 'suggestion-pill '
+                + (s.kind === 'category' ? 'suggestion-pill-category' : 'suggestion-pill-product');
+            pill.textContent = s.kind === 'category' ? 'Category' : 'Product';
+
+            var icon = document.createElement('i');
+            icon.className = s.kind === 'category'
+                ? 'ph ph-folder-open'
+                : 'ph ph-package';
+
+            var text = document.createElement('span');
+            text.textContent = s.label;
+
+            el.appendChild(pill);
+            el.appendChild(icon);
+            el.appendChild(text);
+
+            el.addEventListener('mousedown', function(e) {
+                // mousedown fires before blur — use preventDefault to keep focus
+                e.preventDefault();
+                navigateTo(s.kind, s.label);
+            });
+
+            dropdown.appendChild(el);
+            items.push(el);
+        });
+
+        dropdown.style.display = 'block';
+    }
+
+    function hideDrop() {
+        dropdown.style.display = 'none';
+        activeIdx = -1;
+        items.forEach(function(el) { el.classList.remove('active'); });
+    }
+
+    function setActive(idx) {
+        items.forEach(function(el) { el.classList.remove('active'); });
+        activeIdx = idx;
+        if (idx >= 0 && idx < items.length) {
+            items[idx].classList.add('active');
+            items[idx].scrollIntoView({ block: 'nearest' });
+        }
+    }
+
+    function navigateTo(kind, label) {
+        if (kind === 'category') {
+            window.location.href = ctxPath + '/products?category=' + encodeURIComponent(label);
+        } else {
+            window.location.href = ctxPath + '/search?q=' + encodeURIComponent(label);
+        }
+    }
+
+    input.addEventListener('input', function() {
+        clearTimeout(debounce);
+        var q = input.value.trim();
+        debounce = setTimeout(function() { fetchSuggestions(q); }, 300);
+    });
+
+    input.addEventListener('keydown', function(e) {
+        if (dropdown.style.display === 'none') return;
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setActive(Math.min(activeIdx + 1, items.length - 1));
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setActive(Math.max(activeIdx - 1, -1));
+        } else if (e.key === 'Enter' && activeIdx >= 0) {
+            e.preventDefault();
+            items[activeIdx].dispatchEvent(new MouseEvent('mousedown'));
+        } else if (e.key === 'Escape') {
+            hideDrop();
+        }
+    });
+
+    input.addEventListener('blur', function() {
+        // Small delay so mousedown on a suggestion fires first
+        setTimeout(hideDrop, 150);
+    });
+
+    input.addEventListener('focus', function() {
+        if (input.value.trim().length >= 2) {
+            fetchSuggestions(input.value.trim());
+        }
+    });
+}());
+</script>
+
 </body>
 </html>
