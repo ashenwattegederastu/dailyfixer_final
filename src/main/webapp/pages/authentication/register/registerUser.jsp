@@ -12,8 +12,12 @@
                     align-items: center;
                     justify-content: center;
                     min-height: 100vh;
-                    background-color: var(--background);
                     padding: 40px 20px;
+                    background-image: url('<%= request.getContextPath() %>/assets/images/backgrounds/register.jpeg'); /* your image path */
+                    background-size: cover;       /* fill entire screen */
+                    background-repeat: no-repeat; /* no tiling */
+                    background-position: center;  /* center the image */
+                    background-attachment: fixed;
                 }
 
                 .register-container {
