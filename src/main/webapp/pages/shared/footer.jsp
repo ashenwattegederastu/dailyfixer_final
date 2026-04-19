@@ -23,29 +23,9 @@
       <p class="footer-col-heading">Platform</p>
       <ul class="footer-col-links">
         <li><a href="${pageContext.request.contextPath}/index.jsp">Home</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#services">Services</a></li>
+        <li><a href="${pageContext.request.contextPath}/pages/stores/store_main.jsp">Marketplace</a></li>
+        <li><a href="${pageContext.request.contextPath}/services">Services</a></li>
         <li><a href="${pageContext.request.contextPath}/guides">Guides</a></li>
-      </ul>
-    </div>
-
-    <!-- Support column -->
-    <div class="footer-col">
-      <p class="footer-col-heading">Support</p>
-      <ul class="footer-col-links">
-        <li><a href="#">Help Center</a></li>
-        <li><a href="#">Contact Us</a></li>
-        <li><a href="#">Report a Bug</a></li>
-      </ul>
-    </div>
-
-    <!-- Legal column -->
-    <div class="footer-col">
-      <p class="footer-col-heading">Legal</p>
-      <ul class="footer-col-links">
-        <li><a href="#">Privacy Policy</a></li>
-        <li><a href="#">Terms of Service</a></li>
-        <li><a href="#">Cookie Policy</a></li>
       </ul>
     </div>
 
@@ -53,7 +33,7 @@
     <div class="footer-col">
       <p class="footer-col-heading">Contact</p>
       <ul class="footer-col-links">
-        <li><i class="ph ph-envelope"></i><a href="mailto:support@dailyfixer.com">support@dailyfixer.com</a></li>
+        <li><i class="ph ph-envelope"></i><a href="mailto:dailyfixeradmin@gmail.com">dailyfixeradmin@gmail.com</a></li>
         <li><i class="ph ph-phone"></i><span>+94 77 123 4567</span></li>
         <li><i class="ph ph-map-pin"></i><span>Sri Lanka</span></li>
       </ul>
@@ -64,11 +44,9 @@
   <!-- Google-style bottom bar -->
   <div class="footer-bottom-bar">
     <div class="footer-bottom-inner">
-      <span class="footer-copyright">© 2025 Daily Fixer. All rights reserved.</span>
+      <span class="footer-copyright">2025 Daily Fixer. All rights reserved.</span>
       <nav class="footer-bottom-nav" aria-label="Footer legal links">
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
-        <a href="#">Cookies</a>
+        <a href="${pageContext.request.contextPath}/leaderboard">Volunteer Leaderboard</a>
         <a href="${pageContext.request.contextPath}/pages/authentication/login.jsp">Log in</a>
       </nav>
     </div>
