@@ -12,7 +12,6 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background-color: var(--background);
             padding: 40px 20px;
         }
 

@@ -9,6 +9,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Lora:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/framework.css">
     <style>
+        body {
+            background-image: url('<%= request.getContextPath() %>/assets/images/backgrounds/reg.png'); /* your image path */
+            background-size: cover;       /* fill entire screen */
+            background-repeat: no-repeat; /* no tiling */
+            background-position: center;  /* center the image */
+            background-attachment: fixed;
+        }
         .password-wrapper {
             position: relative;
             width: 100%;
@@ -36,28 +43,13 @@
         .toggle-btn:hover {
             color: #000;
         }
-        .auth-bg-video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
-            pointer-events: none;
-        }
-        
+
         .login-container, body {
             background-color: transparent !important;
         }
     </style>
 </head>
 <body>
-
-<video autoplay muted loop playsinline class="auth-bg-video">
-    <source src="${pageContext.request.contextPath}/assets/images/backgrounds/auth.mp4" type="video/mp4">
-</video>
-
 <div class="login-container">
     <div class="login-card">
         <!-- Added logo/branding section -->

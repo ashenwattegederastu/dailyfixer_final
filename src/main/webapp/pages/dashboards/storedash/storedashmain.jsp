@@ -329,10 +329,6 @@
             <p>Pending Orders</p>
         </div>
         <div class="stat-card">
-            <div class="number"><%= processingOrders != null ? processingOrders.size() : 0 %></div>
-            <p>Processing Orders</p>
-        </div>
-        <div class="stat-card">
             <div class="number"><%= outForDeliveryOrders != null ? outForDeliveryOrders.size() : 0 %></div>
             <p>Up for Delivery</p>
         </div>
@@ -365,8 +361,8 @@
 </main>
 <script>
 window.storeDashData = {
-    statusLabels: ['Pending', 'Processing', 'Out for Delivery', 'Delivered'],
-    statusValues: [<%= pendingCount %>, <%= processingCount %>, <%= outForDeliveryCount %>, <%= deliveredCount %>],
+    statusLabels: ['Pending', 'Out for Delivery', 'Delivered'],
+    statusValues: [<%= pendingCount %>, <%= outForDeliveryCount %>, <%= deliveredCount %>],
     dayLabels: [<%= "\"" + String.join("\",\"", dayLabels) + "\"" %>],
     orderCounts: [<%= orderCountsJs.toString() %>],
     revenueByDay: [<%= revenueByDayJs.toString() %>],
