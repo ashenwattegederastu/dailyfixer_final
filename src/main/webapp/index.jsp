@@ -41,9 +41,8 @@
                         <p>Connect with thousands of people who share your passion for fixing and learning.</p>
                         <c:choose>
                             <c:when test="${not empty sessionScope.currentUser}">
-                                <a href="${pageContext.request.contextPath}/pages/diagnostic/diagnostic-browse.jsp"
-                                    class="hero-cta">Start
-                                    Diagnosing</a>
+                                <a href="${pageContext.request.contextPath}/guides"
+                                    class="hero-cta">View Repair Guides</a>
                             </c:when>
                             <c:otherwise>
                                 <a href="${pageContext.request.contextPath}/pages/authentication/register/preliminarySignup.jsp" class="hero-cta">Get
@@ -59,9 +58,9 @@
                 <!-- Hero Section 2: View Guides -->
                 <section class="hero-section" id="hero2">
                     <div class="hero-content">
-                        <h1>Master Repairs with Our Guides</h1>
-                        <p>Access thousands of step-by-step repair guides created by experts and community members.</p>
-                        <a href="${pageContext.request.contextPath}/guides" class="hero-cta">Explore Guides</a>
+                        <h1>Find Parts Fast in Our Marketplace</h1>
+                        <p>Access a wide range of tools, spare parts, and repair essentials from sellers near you.</p>
+                        <a href="${pageContext.request.contextPath}/pages/stores/store_main.jsp" class="hero-cta">Explore Marketplace</a>
                     </div>
                     <div class="scroll-indicator">
                         <div class="chevron"></div>

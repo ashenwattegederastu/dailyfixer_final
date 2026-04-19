@@ -5,16 +5,27 @@ import com.dailyfixer.model.Review;
 import com.dailyfixer.model.User;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 @WebServlet("/productReview")
+@MultipartConfig(maxFileSize = 5 * 1024 * 1024, maxRequestSize = 10 * 1024 * 1024)
 public class ProductReviewServlet extends HttpServlet {
 
     private ReviewDAO reviewDAO;
@@ -81,6 +92,35 @@ public class ProductReviewServlet extends HttpServlet {
             review.setRating(rating);
             review.setComment(comment.trim());
 
+            // Handle optional review image
+            String savedImagePath = null;
+            try {
+                Part imagePart = request.getPart("image");
+                if (imagePart != null && imagePart.getSize() > 0) {
+                    String contentType = imagePart.getContentType();
+                    Set<String> allowed = new HashSet<>(Arrays.asList("image/jpeg", "image/png", "image/webp"));
+                    if (!allowed.contains(contentType)) {
+                        out.print("{\"success\":false,\"error\":\"Invalid image type. Only JPEG, PNG, and WebP are allowed.\"}");
+                        out.flush();
+                        return;
+                    }
+                    String ext = contentType.equals("image/png") ? "png" : contentType.equals("image/webp") ? "webp" : "jpg";
+                    String filename = "review_" + currentUser.getUserId() + "_" + System.currentTimeMillis() + "." + ext;
+                    String uploadDir = getServletContext().getRealPath("") + File.separator +
+                                      "assets" + File.separator + "images" + File.separator +
+                                      "uploads" + File.separator + "reviews";
+                    File dir = new File(uploadDir);
+                    if (!dir.exists()) dir.mkdirs();
+                    try (InputStream in = imagePart.getInputStream()) {
+                        Files.copy(in, Paths.get(uploadDir, filename), StandardCopyOption.REPLACE_EXISTING);
+                    }
+                    savedImagePath = "assets/images/uploads/reviews/" + filename;
+                }
+            } catch (Exception fileEx) {
+                System.err.println("ProductReviewServlet - Warning: could not process image upload: " + fileEx.getMessage());
+            }
+            review.setImagePath(savedImagePath);
+
             reviewDAO.addReview(review);
             System.out.println("ProductReviewServlet - Review saved successfully for productId: " + productId);
 
@@ -141,6 +181,7 @@ public class ProductReviewServlet extends HttpServlet {
                 json.append("\"username\":\"").append(escapeJson(review.getUsername() != null ? review.getUsername() : "Anonymous")).append("\",");
                 json.append("\"rating\":").append(review.getRating()).append(",");
                 json.append("\"comment\":\"").append(escapeJson(review.getComment())).append("\",");
+                json.append("\"imagePath\":\"").append(escapeJson(review.getImagePath())).append("\",");
                 json.append("\"createdAt\":\"").append(review.getCreatedAt() != null ? review.getCreatedAt().toString() : "").append("\"");
                 json.append("}");
             }

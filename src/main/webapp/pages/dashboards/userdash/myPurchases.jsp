@@ -472,7 +472,7 @@
                 <h3>No Orders Yet</h3>
                 <p>You haven't made any purchases yet. Start exploring
                     our stores to find amazing products!</p>
-                <a href="${pageContext.request.contextPath}/stores"
+                <a href="${pageContext.request.contextPath}/pages/stores/store_main.jsp"
                    class="btn-primary">Browse Stores</a>
             </div>
         </c:otherwise>
@@ -564,7 +564,7 @@
             
             <div style="display: flex; flex-direction: column; gap: 8px;">
                 <label style="font-weight: 600; color: var(--foreground);">Your Rating (Click stars to rate)</label>
-                <div id="ratingStarsModal" style="display: flex; gap: 10px; font-size: 2em; cursor: pointer;">
+                <div id="ratingStarsModal" style="display: flex; gap: 10px; font-size: 2em; cursor: pointer; justify-content: center;">
                     <span class="review-star-modal" data-rating="1" style="cursor: pointer;">☆</span>
                     <span class="review-star-modal" data-rating="2" style="cursor: pointer;">☆</span>
                     <span class="review-star-modal" data-rating="3" style="cursor: pointer;">☆</span>
@@ -580,6 +580,15 @@
                 <textarea id="reviewCommentModal" name="comment" style="padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--input); color: var(--foreground); font-family: inherit; resize: vertical; min-height: 120px;" placeholder="Share your experience with this product..." required></textarea>
             </div>
 
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <label for="reviewImageModal" style="font-weight: 600; color: var(--foreground);">Add a Photo <span style="font-weight: 400; color: var(--muted-foreground);">(optional)</span></label>
+                <input type="file" id="reviewImageModal" name="image" accept="image/jpeg,image/png,image/webp"
+                       style="padding: 8px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--input); color: var(--foreground); font-family: inherit; font-size: 0.9em; cursor: pointer;">
+                <div id="reviewImagePreview" style="display:none; margin-top: 4px;">
+                    <img id="reviewImagePreviewImg" alt="Preview" style="max-height: 120px; border-radius: var(--radius-md); border: 1px solid var(--border); object-fit: cover;">
+                </div>
+            </div>
+
             <div id="reviewMessageModal" style="margin-top: 8px; font-size: 0.9em;"></div>
 
             <div style="display: flex; gap: 12px; justify-content: flex-end;">
@@ -592,7 +601,7 @@
 
 <style>
     .review-star-modal {
-        color: var(--muted);
+        color: #d1d5db;
         transition: color 0.2s ease;
     }
     .review-star-modal:hover,
@@ -708,10 +717,12 @@
         document.getElementById('reviewFormModal').reset();
         document.getElementById('reviewRatingValue').value = '';
         document.getElementById('reviewRatingText').innerText = 'Click stars to rate';
+        document.getElementById('reviewImagePreview').style.display = 'none';
+        document.getElementById('reviewImagePreviewImg').src = '';
         document.querySelectorAll('.review-star-modal').forEach(star => {
             star.classList.remove('active');
             star.textContent = '☆';
-            star.style.color = 'var(--muted)';
+            star.style.color = '#d1d5db';
         });
     }
 
@@ -723,7 +734,7 @@
                 star.classList.add('active');
             } else {
                 star.textContent = '☆';
-                star.style.color = 'var(--muted)';
+                star.style.color = '#d1d5db';
                 star.classList.remove('active');
             }
         });
@@ -750,6 +761,26 @@
         });
     }
 
+    const reviewImageInput = document.getElementById('reviewImageModal');
+    if (reviewImageInput) {
+        reviewImageInput.addEventListener('change', () => {
+            const file = reviewImageInput.files[0];
+            const previewBox = document.getElementById('reviewImagePreview');
+            const previewImg = document.getElementById('reviewImagePreviewImg');
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImg.src = e.target.result;
+                    previewBox.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewBox.style.display = 'none';
+                previewImg.src = '';
+            }
+        });
+    }
+
     document.getElementById('reviewFormModal').addEventListener('submit', (e) => {
         e.preventDefault();
 
@@ -770,15 +801,18 @@
 
         messageDiv.innerHTML = '<p style="color: var(--muted-foreground);">Submitting review...</p>';
 
-        const params = new URLSearchParams();
-        params.append('productId', productId);
-        params.append('rating', rating);
-        params.append('comment', comment);
+        const formData = new FormData();
+        formData.append('productId', productId);
+        formData.append('rating', rating);
+        formData.append('comment', comment);
+        const imageFile = document.getElementById('reviewImageModal').files[0];
+        if (imageFile) {
+            formData.append('image', imageFile);
+        }
 
         fetch(contextPath + '/productReview', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: params.toString()
+            body: formData
         })
             .then(res => res.json())
             .then(data => {

@@ -9,6 +9,8 @@ public class GuideComment {
     private String comment;
     private Timestamp createdAt;
 
+    private String imagePath;
+
     // For display purposes
     private String reply;
     private Timestamp replyAt;
@@ -98,6 +100,14 @@ public class GuideComment {
 
     public void setReply(String reply) {
         this.reply = reply;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public Timestamp getReplyAt() {

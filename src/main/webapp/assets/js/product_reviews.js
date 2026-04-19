@@ -70,6 +70,7 @@
                 const stars = "\u2605".repeat(Math.max(0, Math.min(5, rating))) + "\u2606".repeat(Math.max(0, 5 - rating));
                 const username = escapeHtml(review.username || "Anonymous");
                 const comment = escapeHtml(review.comment || "");
+                const imagePath = review.imagePath || "";
 
                 html += '<div style="padding: 20px; margin-bottom: 20px; background-color: var(--card); border: 1px solid var(--border); border-radius: 10px; width: 100%; box-sizing: border-box;">';
                 html += '<div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">';
@@ -80,6 +81,15 @@
                 html += '<span style="color: var(--muted-foreground); font-size: 0.9em; margin-left: 15px;">' + dateStr + '</span>';
                 html += '</div>';
                 html += '<p style="color: var(--foreground); line-height: 1.6; margin: 0; text-align: left;">' + comment + '</p>';
+                if (imagePath) {
+                    const fullUrl = contextPath + "/" + imagePath;
+                    html += '<div style="margin-top: 12px;">';
+                    html += '<img src="' + fullUrl + '" alt="Review photo" '
+                          + 'style="width:90px; height:90px; object-fit:cover; border-radius:8px; cursor:pointer; border:1px solid var(--border);" '
+                          + 'onclick="openReviewPhoto(\'' + fullUrl.replace(/'/g, "\\'") + '\')" '
+                          + 'title="Click to enlarge">';
+                    html += '</div>';
+                }
                 html += '</div>';
             });
 
@@ -118,3 +128,22 @@
         console.error("Error initializing product reviews:", e);
     }
 })();
+
+function openReviewPhoto(url) {
+    let overlay = document.getElementById("reviewPhotoLightbox");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "reviewPhotoLightbox";
+        overlay.style.cssText = "position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:9999;cursor:zoom-out;";
+        overlay.addEventListener("click", () => { overlay.style.display = "none"; });
+        document.addEventListener("keydown", (e) => { if (e.key === "Escape") overlay.style.display = "none"; });
+        const img = document.createElement("img");
+        img.id = "reviewPhotoLightboxImg";
+        img.style.cssText = "max-width:92vw;max-height:90vh;border-radius:8px;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,0.6);";
+        img.addEventListener("click", (e) => e.stopPropagation());
+        overlay.appendChild(img);
+        document.body.appendChild(overlay);
+    }
+    document.getElementById("reviewPhotoLightboxImg").src = url;
+    overlay.style.display = "flex";
+}

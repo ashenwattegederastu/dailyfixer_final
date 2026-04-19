@@ -4,22 +4,25 @@ import java.sql.*;
 import java.util.*;
 import com.dailyfixer.model.GuideComment;
 import com.dailyfixer.util.DBConnection;
+import com.dailyfixer.util.ImageUploadUtil;
 
 public class GuideCommentDAO {
 
     /**
      * Add a new comment to a guide.
-     * 
+     *
+     * @param imagePath Optional relative path to an uploaded image (may be null)
      * @return The generated comment ID, or -1 on failure
      */
-    public int addComment(int guideId, int userId, String comment) {
-        String sql = "INSERT INTO guide_comments (guide_id, user_id, comment) VALUES (?, ?, ?)";
+    public int addComment(int guideId, int userId, String comment, String imagePath) {
+        String sql = "INSERT INTO guide_comments (guide_id, user_id, comment, image_path) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, guideId);
             ps.setInt(2, userId);
             ps.setString(3, comment);
+            ps.setString(4, imagePath);
             ps.executeUpdate();
 
             ResultSet rs = ps.getGeneratedKeys();
@@ -52,6 +55,7 @@ public class GuideCommentDAO {
                 comment.setGuideId(rs.getInt("guide_id"));
                 comment.setUserId(rs.getInt("user_id"));
                 comment.setComment(rs.getString("comment"));
+                comment.setImagePath(rs.getString("image_path"));
                 comment.setCreatedAt(rs.getTimestamp("created_at"));
                 comment.setReply(rs.getString("reply"));
                 comment.setReplyAt(rs.getTimestamp("reply_at"));
@@ -131,17 +135,37 @@ public class GuideCommentDAO {
 
     /**
      * Delete a comment. Only the comment owner can delete.
-     * 
+     * Also deletes the associated image file from disk if present.
+     *
+     * @param webAppPath The absolute path to the webapp directory (for image cleanup), may be null
      * @return true if deleted successfully
      */
-    public boolean deleteComment(int commentId, int userId) {
-        String sql = "DELETE FROM guide_comments WHERE comment_id = ? AND user_id = ?";
+    public boolean deleteComment(int commentId, int userId, String webAppPath) {
+        // Fetch the image path first so we can clean up the file after deletion
+        String imagePath = null;
+        String fetchSql = "SELECT image_path FROM guide_comments WHERE comment_id = ? AND user_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(fetchSql)) {
+            ps.setInt(1, commentId);
+            ps.setInt(2, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                imagePath = rs.getString("image_path");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        String sql = "DELETE FROM guide_comments WHERE comment_id = ? AND user_id = ?";
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, commentId);
             ps.setInt(2, userId);
-            return ps.executeUpdate() > 0;
+            boolean deleted = ps.executeUpdate() > 0;
+            if (deleted && imagePath != null && webAppPath != null) {
+                ImageUploadUtil.deleteImage(imagePath, webAppPath);
+            }
+            return deleted;
         } catch (Exception e) {
             e.printStackTrace();
             return false;

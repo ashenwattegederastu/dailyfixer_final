@@ -4,6 +4,7 @@ import com.dailyfixer.dao.BookingDAO;
 import com.dailyfixer.dao.BookingRatingDAO;
 import com.dailyfixer.dao.ServiceCategoryDAO;
 import com.dailyfixer.dao.ServiceDAO;
+import com.dailyfixer.dao.TechnicianAvailabilityDAO;
 import com.dailyfixer.dao.UserDAO;
 import com.dailyfixer.model.Service;
 import com.dailyfixer.model.ServiceCategory;
@@ -14,8 +15,10 @@ import jakarta.servlet.http.*;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @WebServlet("/services")
 public class ServiceListingServlet extends HttpServlet {
@@ -26,6 +29,7 @@ public class ServiceListingServlet extends HttpServlet {
             BookingRatingDAO ratingDAO = new BookingRatingDAO();
             UserDAO userDAO = new UserDAO();
             BookingDAO bookingDAO = new BookingDAO();
+            TechnicianAvailabilityDAO availabilityDAO = new TechnicianAvailabilityDAO();
 
             // Get all services
             List<Service> services = serviceDAO.getAllServices();
@@ -83,6 +87,22 @@ public class ServiceListingServlet extends HttpServlet {
                     .toList();
             }
 
+            // Filter out services from technicians who have not set availability
+            Set<Integer> techsWithAvailability = new HashSet<>();
+            Set<Integer> checkedTechs = new HashSet<>();
+            for (Service s : services) {
+                int tid = s.getTechnicianId();
+                if (!checkedTechs.contains(tid)) {
+                    checkedTechs.add(tid);
+                    if (availabilityDAO.getAvailabilityByTechnicianId(tid) != null) {
+                        techsWithAvailability.add(tid);
+                    }
+                }
+            }
+            services = services.stream()
+                .filter(s -> techsWithAvailability.contains(s.getTechnicianId()))
+                .toList();
+
             // Build rating maps keyed by technicianId
             Map<Integer, Double> techAvgRatings = new HashMap<>();
             Map<Integer, Integer> techRatingCounts = new HashMap<>();
@@ -96,6 +116,23 @@ public class ServiceListingServlet extends HttpServlet {
                     techJobsCount.put(tid, bookingDAO.countCompletedBookingsByTechnician(tid));
                 }
             }
+
+            // Sort by avg rating descending; services with no ratings go to the bottom
+            final Map<Integer, Double> ratingsForSort = techAvgRatings;
+            final Map<Integer, Integer> countsForSort = techRatingCounts;
+            services = services.stream()
+                .sorted((a, b) -> {
+                    int countA = countsForSort.getOrDefault(a.getTechnicianId(), 0);
+                    int countB = countsForSort.getOrDefault(b.getTechnicianId(), 0);
+                    if (countA == 0 && countB == 0) return 0;
+                    if (countA == 0) return 1;
+                    if (countB == 0) return -1;
+                    return Double.compare(
+                        ratingsForSort.getOrDefault(b.getTechnicianId(), 0.0),
+                        ratingsForSort.getOrDefault(a.getTechnicianId(), 0.0)
+                    );
+                })
+                .toList();
 
             request.setAttribute("services", services);
             request.setAttribute("categories", categories);

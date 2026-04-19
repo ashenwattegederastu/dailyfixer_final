@@ -117,6 +117,7 @@
                     <th>Customer</th>
                     <th>Rating</th>
                     <th>Comment</th>
+                    <th>Photo</th>
                     <th>Date</th>
                     <th>Action</th>
                 </tr>
@@ -124,7 +125,7 @@
             <tbody>
                 <% if (reviews == null || reviews.isEmpty()) { %>
                 <tr>
-                    <td colspan="6" style="text-align: center; padding: 40px; color: var(--muted-foreground);">
+                    <td colspan="7" style="text-align: center; padding: 40px; color: var(--muted-foreground);">
                         No reviews yet. Reviews will appear here once customers submit them.
                     </td>
                 </tr>
@@ -159,6 +160,17 @@
                     </td>
                     <td class="comment-cell">
                         <%= comment.length() > 100 ? comment.substring(0, 100) + "..." : comment %>
+                    </td>
+                    <td>
+                        <% if (review.getImagePath() != null && !review.getImagePath().isEmpty()) { %>
+                            <img src="<%= request.getContextPath() + "/" + review.getImagePath() %>"
+                                 alt="Review photo"
+                                 style="width:60px;height:60px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid var(--border);"
+                                 onclick="openReviewPhotoStoreDash('<%= request.getContextPath() + "/" + review.getImagePath() %>')"
+                                 title="Click to enlarge">
+                        <% } else { %>
+                            <span style="color:var(--muted-foreground);">—</span>
+                        <% } %>
                     </td>
                     <td>
                         <%= review.getCreatedAt() != null ? dateFormat.format(review.getCreatedAt()) : "N/A" %>
@@ -444,6 +456,25 @@ document.getElementById('productDetailsModal').addEventListener('click', e => {
         closeProductDetailsModal();
     }
 });
+
+function openReviewPhotoStoreDash(url) {
+    let overlay = document.getElementById("storeReviewPhotoLightbox");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "storeReviewPhotoLightbox";
+        overlay.style.cssText = "position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:9999;cursor:zoom-out;";
+        overlay.addEventListener("click", () => { overlay.style.display = "none"; });
+        document.addEventListener("keydown", (e) => { if (e.key === "Escape") overlay.style.display = "none"; });
+        const img = document.createElement("img");
+        img.id = "storeReviewPhotoLightboxImg";
+        img.style.cssText = "max-width:92vw;max-height:90vh;border-radius:8px;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,0.6);";
+        img.addEventListener("click", (e) => e.stopPropagation());
+        overlay.appendChild(img);
+        document.body.appendChild(overlay);
+    }
+    document.getElementById("storeReviewPhotoLightboxImg").src = url;
+    overlay.style.display = "flex";
+}
 </script>
 
 </body>

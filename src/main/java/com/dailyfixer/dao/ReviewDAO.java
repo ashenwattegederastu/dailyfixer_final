@@ -11,13 +11,14 @@ public class ReviewDAO {
 
     // Add a new review
     public void addReview(Review review) throws Exception {
-        String sql = "INSERT INTO product_reviews (product_id, user_id, rating, comment, created_at) VALUES (?, ?, ?, ?, NOW())";
+        String sql = "INSERT INTO product_reviews (product_id, user_id, rating, comment, image_path, created_at) VALUES (?, ?, ?, ?, ?, NOW())";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, review.getProductId());
             ps.setInt(2, review.getUserId());
             ps.setInt(3, review.getRating());
             ps.setString(4, review.getComment());
+            ps.setString(5, review.getImagePath());
             ps.executeUpdate();
 
             // Get generated review ID
@@ -51,6 +52,7 @@ public class ReviewDAO {
                 review.setUsername(rs.getString("username"));
                 review.setRating(rs.getInt("rating"));
                 review.setComment(rs.getString("comment"));
+                review.setImagePath(rs.getString("image_path"));
                 review.setCreatedAt(rs.getTimestamp("created_at"));
                 reviews.add(review);
             }
@@ -130,6 +132,7 @@ public class ReviewDAO {
                 review.setProductName(rs.getString("product_name"));
                 review.setRating(rs.getInt("rating"));
                 review.setComment(rs.getString("comment"));
+                review.setImagePath(rs.getString("image_path"));
                 review.setCreatedAt(rs.getTimestamp("created_at"));
                 reviews.add(review);
             }

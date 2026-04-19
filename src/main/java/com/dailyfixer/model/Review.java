@@ -10,6 +10,7 @@ public class Review {
     private String productName; // Product name for display in store reviews
     private int rating;
     private String comment;
+    private String imagePath;
     private Timestamp createdAt;
 
     // Getters and Setters
@@ -67,6 +68,14 @@ public class Review {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public Timestamp getCreatedAt() {

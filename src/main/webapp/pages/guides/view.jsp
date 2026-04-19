@@ -317,6 +317,59 @@
                     font-size: 0.8rem;
                 }
 
+                /* Comment image upload zone */
+                .comment-upload-area {
+                    position: relative;
+                    margin-bottom: 10px;
+                }
+
+                .comment-upload-label {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 10px 15px;
+                    border: 2px dashed var(--border);
+                    border-radius: var(--radius-md);
+                    background: var(--input);
+                    color: var(--muted-foreground);
+                    cursor: pointer;
+                    font-size: 0.9rem;
+                    transition: border-color 0.2s, color 0.2s;
+                }
+
+                .comment-upload-label:hover {
+                    border-color: var(--primary);
+                    color: var(--foreground);
+                }
+
+                .comment-upload-label input[type="file"] {
+                    position: absolute;
+                    inset: 0;
+                    opacity: 0;
+                    cursor: pointer;
+                    width: 100%;
+                    height: 100%;
+                }
+
+                /* Comment attached image */
+                .comment-attachment img {
+                    margin-top: 10px;
+                    max-width: 280px;
+                    max-height: 200px;
+                    object-fit: cover;
+                    border-radius: var(--radius-md);
+                    border: 1px solid var(--border);
+                    cursor: zoom-in;
+                    transition: max-width 0.3s, max-height 0.3s;
+                    display: block;
+                }
+
+                .comment-attachment img.expanded {
+                    max-width: 100%;
+                    max-height: none;
+                    cursor: zoom-out;
+                }
+
                 .edit-comment-btn, .reply-btn, .edit-reply-btn, .delete-reply-btn {
                     background: transparent;
                     border: none;
@@ -669,10 +722,18 @@
 
                     <c:if test="${not empty sessionScope.currentUser}">
                         <form class="comment-form" action="${pageContext.request.contextPath}/guides/comment"
-                            method="post">
+                            method="post" enctype="multipart/form-data">
                             <input type="hidden" name="guideId" value="${guide.guideId}">
                             <input type="hidden" name="action" value="add">
                             <textarea name="comment" placeholder="Write a comment..." required></textarea>
+                            <div class="comment-upload-area">
+                                <label class="comment-upload-label" for="commentImage">
+                                    <i class="ph ph-image" style="font-size: 1.2rem; flex-shrink:0;"></i>
+                                    <span id="commentImageLabel">Attach a photo&nbsp;<span style="opacity:0.6;">(optional &middot; max 5 MB)</span></span>
+                                    <input type="file" id="commentImage" name="commentImage" accept="image/*"
+                                        onchange="updateCommentImageLabel(this)">
+                                </label>
+                            </div>
                             <button type="submit" class="btn-primary">Post Comment</button>
                         </form>
                     </c:if>
@@ -707,6 +768,16 @@
                                     </div>
 
                                     <p class="comment-text">${comment.comment}</p>
+
+                                    <%-- Comment image (if present) --%>
+                                    <c:if test="${not empty comment.imagePath}">
+                                        <div class="comment-attachment">
+                                            <img src="${pageContext.request.contextPath}/${comment.imagePath}"
+                                                alt="Comment image"
+                                                title="Click to expand"
+                                                onclick="this.classList.toggle('expanded')">
+                                        </div>
+                                    </c:if>
 
                                     <%-- Inline edit form: only for comment owner --%>
                                     <c:if test="${comment.userId == currentUserId}">
@@ -906,6 +977,15 @@
                     var el = document.getElementById(id);
                     if (el) {
                         el.style.display = el.style.display === 'block' ? 'none' : 'block';
+                    }
+                }
+
+                function updateCommentImageLabel(input) {
+                    var span = document.getElementById('commentImageLabel');
+                    if (input.files && input.files[0]) {
+                        span.textContent = input.files[0].name;
+                    } else {
+                        span.innerHTML = 'Attach a photo\u00a0<span style="opacity:0.6;">(optional \u00b7 max 5 MB)</span>';
                     }
                 }
             </script>

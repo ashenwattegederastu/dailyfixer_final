@@ -2,12 +2,15 @@ package com.dailyfixer.servlet.guide;
 
 import com.dailyfixer.dao.GuideCommentDAO;
 import com.dailyfixer.model.User;
+import com.dailyfixer.util.ImageUploadUtil;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
 import java.io.IOException;
 
 /**
@@ -15,6 +18,10 @@ import java.io.IOException;
  * URL: /guides/comment
  */
 @WebServlet("/guides/comment")
+@MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1 MB
+        maxFileSize = 1024 * 1024 * 5,             // 5 MB per file
+        maxRequestSize = 1024 * 1024 * 10          // 10 MB total
+)
 public class GuideCommentServlet extends HttpServlet {
 
     private GuideCommentDAO commentDAO = new GuideCommentDAO();
@@ -57,7 +64,17 @@ public class GuideCommentServlet extends HttpServlet {
             // Add a new comment
             String comment = request.getParameter("comment");
             if (comment != null && !comment.trim().isEmpty()) {
-                commentDAO.addComment(guideId, currentUser.getUserId(), comment.trim());
+                String imagePath = null;
+                try {
+                    Part imagePart = request.getPart("commentImage");
+                    if (imagePart != null && imagePart.getSize() > 0) {
+                        String webAppPath = getServletContext().getRealPath("/");
+                        imagePath = ImageUploadUtil.saveTempImage(imagePart, "comment", webAppPath);
+                    }
+                } catch (Exception e) {
+                    // Image upload failed; proceed without image
+                }
+                commentDAO.addComment(guideId, currentUser.getUserId(), comment.trim(), imagePath);
             }
         } else if ("edit".equals(action)) {
             // Edit own comment text
@@ -77,7 +94,8 @@ public class GuideCommentServlet extends HttpServlet {
             if (commentIdParam != null) {
                 try {
                     int commentId = Integer.parseInt(commentIdParam);
-                    commentDAO.deleteComment(commentId, currentUser.getUserId());
+                    String webAppPath = getServletContext().getRealPath("/");
+                    commentDAO.deleteComment(commentId, currentUser.getUserId(), webAppPath);
                 } catch (NumberFormatException e) {
                     // Ignore invalid comment ID
                 }

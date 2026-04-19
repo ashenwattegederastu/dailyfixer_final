@@ -1,6 +1,7 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
     <%@ page import="com.dailyfixer.model.User" %>
     <%@ page import="com.dailyfixer.dao.ChatDAO" %>
+    <%@ page import="com.dailyfixer.dao.TechnicianAvailabilityDAO" %>
 
         <% User currentUser=(User) session.getAttribute("currentUser"); String firstName=currentUser !=null &&
             currentUser.getFirstName() !=null ? currentUser.getFirstName() : "Technician" ; String lastName=currentUser
@@ -13,6 +14,16 @@
                 try {
                     ChatDAO chatDAO = new ChatDAO();
                     unreadChatsCount = chatDAO.getTotalUnreadCountForUser(currentUser.getUserId());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            boolean noAvailability = false;
+            if (currentUser != null) {
+                try {
+                    TechnicianAvailabilityDAO availabilityDAO = new TechnicianAvailabilityDAO();
+                    noAvailability = availabilityDAO.getAvailabilityByTechnicianId(currentUser.getUserId()) == null;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -49,8 +60,15 @@
                         </li>
                         <li>
                             <a href="${pageContext.request.contextPath}/availability" id="nav-availability">
-                                <i class="ph ph-calendar-dots"></i>
-                                Set Availability
+                                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                                    <div>
+                                        <i class="ph ph-calendar-dots"></i>
+                                        Set Availability
+                                    </div>
+                                    <% if (noAvailability) { %>
+                                        <i class="ph-fill ph-warning" title="Availability not set — your services are hidden from users" style="color: #ef4444; font-size: 1.1rem;"></i>
+                                    <% } %>
+                                </div>
                             </a>
                         </li>
                         <li>

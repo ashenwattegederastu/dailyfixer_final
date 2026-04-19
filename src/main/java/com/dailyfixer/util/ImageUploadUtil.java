@@ -255,6 +255,31 @@ public class ImageUploadUtil {
         }
     }
 
+    /**
+     * Saves a comment image.
+     *
+     * @param imagePart  The uploaded file part
+     * @param commentId  The comment ID
+     * @param webAppPath The absolute path to the webapp directory
+     * @return The relative path to the saved image (for storing in DB), or null if no file
+     */
+    public static String saveCommentImage(Part imagePart, int commentId, String webAppPath) throws IOException {
+        if (imagePart == null || imagePart.getSize() == 0) {
+            return null;
+        }
+
+        String contentType = imagePart.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            return null;
+        }
+
+        String fileName = "comment_" + commentId + "_" + System.currentTimeMillis() + getExtension(imagePart);
+        String relativePath = UPLOAD_DIR + "/" + fileName;
+
+        saveFile(imagePart, webAppPath, relativePath);
+        return relativePath;
+    }
+
     private static void saveFile(Part imagePart, String webAppPath, String relativePath) throws IOException {
         Path uploadPath = Paths.get(webAppPath, UPLOAD_DIR);
 
