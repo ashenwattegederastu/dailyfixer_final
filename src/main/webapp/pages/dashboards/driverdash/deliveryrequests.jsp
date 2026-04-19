@@ -3,6 +3,7 @@
 <%@ page import="com.dailyfixer.model.DeliveryAssignment" %>
 <%@ page import="com.dailyfixer.model.Vehicle" %>
 <%@ page import="com.dailyfixer.dao.DeliveryAssignmentDAO" %>
+<%@ page import="com.dailyfixer.dao.DeliveryRateDAO" %>
 <%@ page import="com.dailyfixer.dao.VehicleDAO" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
@@ -33,6 +34,27 @@
             }
         }
         vehicleCategories.addAll(catSet);
+
+        // Expand vehicleCategories based on capacity hierarchy:
+        // Bike=1, Threewheel/Tuk=2, Lorry=3
+        // A higher-capacity driver can see orders requiring smaller vehicles.
+        if (!vehicleCategories.isEmpty()) {
+            int driverMaxRank = 0;
+            for (String cat : vehicleCategories) {
+                String cl = cat.toLowerCase();
+                int rank = cl.contains("lorry") ? 3 : (cl.contains("three") || cl.contains("tuk")) ? 2 : 1;
+                if (rank > driverMaxRank) driverMaxRank = rank;
+            }
+            DeliveryRateDAO deliveryRateDAO = new DeliveryRateDAO();
+            List<String> allActiveTypes = deliveryRateDAO.getActiveVehicleTypes();
+            Set<String> expandedCatSet = new LinkedHashSet<>(vehicleCategories);
+            for (String vt : allActiveTypes) {
+                String vtl = vt.toLowerCase();
+                int rank = vtl.contains("lorry") ? 3 : (vtl.contains("three") || vtl.contains("tuk")) ? 2 : 1;
+                if (rank <= driverMaxRank) expandedCatSet.add(vt);
+            }
+            vehicleCategories = new ArrayList<>(expandedCatSet);
+        }
 
         if (!vehicleCategories.isEmpty()) {
             DeliveryAssignmentDAO assignmentDAO = new DeliveryAssignmentDAO();
