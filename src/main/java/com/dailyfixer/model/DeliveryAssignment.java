@@ -36,6 +36,7 @@ public class DeliveryAssignment {
     private String customerName;        // first_name + last_name from orders
     private String buyerPhone;          // phone from orders for delivery contact
     private String driverName;          // for admin / store views
+    private String storePhone;          // store owner phone_number from users
 
     // ── Getters & Setters ────────────────────────────────────────────────────
 
@@ -111,4 +112,7 @@ public class DeliveryAssignment {
 
     public String getDriverName() { return driverName; }
     public void setDriverName(String driverName) { this.driverName = driverName; }
+
+    public String getStorePhone() { return storePhone; }
+    public void setStorePhone(String storePhone) { this.storePhone = storePhone; }
 }

@@ -166,9 +166,11 @@ public class DeliveryAssignmentDAO {
 
     private static final String SELECT_BY_DRIVER =
         "SELECT da.*, s.store_name, s.latitude AS store_lat, s.longitude AS store_lng, " +
-        "       o.first_name, o.last_name, o.phone AS buyer_phone " +
+        "       o.first_name, o.last_name, o.phone AS buyer_phone, " +
+        "       su.phone_number AS store_phone " +
         "FROM delivery_assignments da " +
         "JOIN stores s ON da.store_id = s.store_id " +
+        "JOIN users su ON s.user_id = su.user_id " +
         "JOIN orders o ON da.order_id = o.order_id " +
         "WHERE da.driver_id = ? AND da.status = ? " +
         "ORDER BY da.created_at DESC";
@@ -705,6 +707,7 @@ public class DeliveryAssignmentDAO {
                     String ln = rs.getString("last_name");
                     if (fn != null) da.setCustomerName(fn + (ln != null ? " " + ln : ""));
                     da.setBuyerPhone(rs.getString("buyer_phone"));
+                    da.setStorePhone(rs.getString("store_phone"));
                     list.add(da);
                 }
             }

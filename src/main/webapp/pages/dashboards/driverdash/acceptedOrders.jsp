@@ -5,7 +5,9 @@
 <%@ page import="com.dailyfixer.dao.DeliveryAssignmentDAO" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Comparator" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="com.dailyfixer.util.DeliveryFeeCalculator" %>
 
 <%
     User user = (User) session.getAttribute("currentUser");
@@ -14,11 +16,34 @@
         return;
     }
 
+    Double driverLat = user.getLatitude();
+    Double driverLng = user.getLongitude();
+    boolean hasDriverLoc = driverLat != null && driverLng != null;
+
     DeliveryAssignmentDAO assignmentDAO = new DeliveryAssignmentDAO();
     List<DeliveryAssignment> acceptedOrders = assignmentDAO.getByDriver(user.getUserId(), "ACCEPTED");
     List<DeliveryAssignment> pickedUpOrders = assignmentDAO.getByDriver(user.getUserId(), "PICKED_UP");
 
-    // Merge both lists: ACCEPTED first, then PICKED_UP
+    // Compute distance from driver home to store for each assignment
+    if (hasDriverLoc) {
+        for (DeliveryAssignment a : acceptedOrders) {
+            if (a.getStoreLat() != 0 && a.getStoreLng() != 0) {
+                a.setDistanceKm(DeliveryFeeCalculator.haversineDistance(
+                        driverLat, driverLng, a.getStoreLat(), a.getStoreLng()));
+            }
+        }
+        for (DeliveryAssignment a : pickedUpOrders) {
+            if (a.getStoreLat() != 0 && a.getStoreLng() != 0) {
+                a.setDistanceKm(DeliveryFeeCalculator.haversineDistance(
+                        driverLat, driverLng, a.getStoreLat(), a.getStoreLng()));
+            }
+        }
+    }
+
+    // Sort each group by distance (ascending), then merge: ACCEPTED first, then PICKED_UP
+    acceptedOrders.sort(Comparator.comparingDouble(DeliveryAssignment::getDistanceKm));
+    pickedUpOrders.sort(Comparator.comparingDouble(DeliveryAssignment::getDistanceKm));
+
     List<DeliveryAssignment> activeOrders = new ArrayList<>();
     activeOrders.addAll(acceptedOrders);
     activeOrders.addAll(pickedUpOrders);
@@ -213,7 +238,7 @@ tbody tr:hover { background-color: var(--muted); }
                 <th>Order ID</th>
                 <th>Customer</th>
                 <th>Phone</th>
-                <th>Pickup</th>
+                <th>Store Phone</th>
                 <th>Dropoff</th>
                 <th>Delivery Fee</th>
                 <th>Status</th>
@@ -231,7 +256,7 @@ tbody tr:hover { background-color: var(--muted); }
             <% } else {
                 for (DeliveryAssignment a : activeOrders) {
                     String customerName = a.getCustomerName() != null ? a.getCustomerName() : "—";
-                    String pickup       = a.getPickupAddress() != null ? a.getPickupAddress() : a.getStoreName();
+                    String storePhone   = a.getStorePhone() != null && !a.getStorePhone().isBlank() ? a.getStorePhone() : "—";
                     String dropoff      = a.getDeliveryAddress() != null ? a.getDeliveryAddress() : "—";
                     String feeStr       = a.getDeliveryFeeEarned() != null
                                           ? String.format("LKR %.2f", a.getDeliveryFeeEarned()) : "LKR 0.00";
@@ -253,7 +278,7 @@ tbody tr:hover { background-color: var(--muted); }
                 <td><%= a.getOrderId() %></td>
                 <td><%= customerName %></td>
                 <td><%= buyerPhone %></td>
-                <td><%= pickup %></td>
+                <td><%= storePhone %></td>
                 <td style="max-width: 180px; word-break: break-word;"><%= dropoff %></td>
                 <td><strong><%= feeStr %></strong></td>
                 <td>
