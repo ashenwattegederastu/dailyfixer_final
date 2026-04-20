@@ -1,48 +1,58 @@
 package com.dailyfixer.servlet.user;
 
+import com.dailyfixer.dao.UserDAO;
 import com.dailyfixer.model.User;
-import com.dailyfixer.util.DBConnection;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
 
 @WebServlet("/admin/users")
 public class UserListServlet extends HttpServlet {
+
+    private UserDAO userDAO;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        userDAO = new UserDAO();
+    }
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<User> users = new ArrayList<>();
 
-        try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement("SELECT * FROM users ORDER BY user_id DESC")) {
+        HttpSession session = request.getSession(false);
+        User currentUser = session != null ? (User) session.getAttribute("currentUser") : null;
+        if (currentUser == null || !"admin".equalsIgnoreCase(currentUser.getRole())) {
+            response.sendRedirect(request.getContextPath() + "/pages/authentication/login.jsp");
+            return;
+        }
 
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                User u = new User();
-                u.setUserId(rs.getInt("user_id"));
-                u.setFirstName(rs.getString("first_name"));
-                u.setLastName(rs.getString("last_name"));
-                u.setUsername(rs.getString("username"));
-                u.setEmail(rs.getString("email"));
-                u.setPhoneNumber(rs.getString("phone_number"));
-                u.setCity(rs.getString("city"));
-                u.setRole(rs.getString("role"));
-                u.setStatus(rs.getString("status"));
-                users.add(u);
+        String search = request.getParameter("search");
+        List<User> users;
+
+        try {
+            if (search != null && !search.trim().isEmpty()) {
+                users = userDAO.searchUsers(search.trim());
+            } else {
+                users = userDAO.getAllUsers();
             }
-
         } catch (Exception e) {
             e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error fetching users");
+            return;
         }
 
         request.setAttribute("users", users);
-        RequestDispatcher rd = request.getRequestDispatcher("/pages/dashboards/admindash/userManagement.jsp");
-
-//        RequestDispatcher rd = request.getRequestDispatcher(request.getContextPath() + "pages/dashboards/admindash/user_management.jsp");
-        rd.forward(request, response);
+        request.setAttribute("searchTerm", search != null ? search : "");
+        request.getRequestDispatcher("/pages/dashboards/admindash/userManagement.jsp")
+               .forward(request, response);
     }
 }

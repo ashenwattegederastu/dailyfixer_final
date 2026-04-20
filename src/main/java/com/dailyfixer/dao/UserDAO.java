@@ -5,6 +5,8 @@ import com.dailyfixer.util.DBConnection;
 import com.dailyfixer.util.HashUtil;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDAO {
 
@@ -240,6 +242,43 @@ public class UserDAO {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public List<User> getAllUsers() throws Exception {
+        String sql = "SELECT * FROM users ORDER BY user_id DESC";
+        List<User> users = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                users.add(mapUser(rs));
+            }
+        }
+        return users;
+    }
+
+    public List<User> searchUsers(String term) throws Exception {
+        String sql = "SELECT * FROM users "
+                   + "WHERE first_name LIKE ? "
+                   + "OR last_name LIKE ? "
+                   + "OR username LIKE ? "
+                   + "OR email LIKE ? "
+                   + "ORDER BY user_id DESC";
+        String like = "%" + term + "%";
+        List<User> users = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, like);
+            ps.setString(2, like);
+            ps.setString(3, like);
+            ps.setString(4, like);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    users.add(mapUser(rs));
+                }
+            }
+        }
+        return users;
     }
 
     public boolean softDeleteUser(int userId) {

@@ -44,25 +44,13 @@
                             <p>Manage all platform users and their roles.</p>
                         </div>
 
-                        <!-- Search + Filters -->
-                        <div class="search-container">
-                            <input type="text" id="userSearch" class="search-input"
-                                placeholder="Search users by name, email, or username...">
-                            <select id="roleFilter" class="filter-select">
-                                <option value="">All Roles</option>
-                                <option value="admin">Admin</option>
-                                <option value="technician">Technician</option>
-                                <option value="volunteer">Volunteer</option>
-                                <option value="driver">Driver</option>
-                                <option value="store">Store</option>
-                                <option value="user">User</option>
-                            </select>
-                            <select id="statusFilter" class="filter-select">
-                                <option value="">All Status</option>
-                                <option value="active">Active</option>
-                                <option value="suspended">Suspended</option>
-                            </select>
-                        </div>
+                        <!-- Search -->
+                        <form method="get" action="${pageContext.request.contextPath}/admin/users" class="search-container">
+                            <input type="text" name="search" class="search-input"
+                                placeholder="Search users by name, email, or username..."
+                                value="${searchTerm}">
+                            <button type="submit" class="action-btn btn-activate">Search</button>
+                        </form>
 
                         <div class="table-container">
                             <table>
@@ -99,6 +87,7 @@
                                                     method="post" style="display:inline;">
                                                     <input type="hidden" name="userId" value="${user.userId}">
                                                     <input type="hidden" name="currentStatus" value="${user.status}">
+                                                    <input type="hidden" name="search" value="${searchTerm}">
                                                     <button type="submit"
                                                         class="action-btn ${user.status == 'active' ? 'btn-suspend' : 'btn-activate'}">
                                                         ${user.status == 'active' ? 'Suspend' : 'Activate'}
@@ -112,35 +101,7 @@
                         </div>
                     </main>
 
-                    <script>
-                        // Search and filter logic
-                        const searchInput = document.getElementById('userSearch');
-                        const roleFilter = document.getElementById('roleFilter');
-                        const statusFilter = document.getElementById('statusFilter');
 
-                        function filterTable() {
-                            const term = searchInput.value.toLowerCase();
-                            const role = roleFilter.value.toLowerCase();
-                            const status = statusFilter.value.toLowerCase();
-                            const rows = document.querySelectorAll('tbody tr');
-
-                            rows.forEach(row => {
-                                const text = row.textContent.toLowerCase();
-                                const roleText = row.cells[6].textContent.toLowerCase();
-                                const statusText = row.cells[7].textContent.toLowerCase();
-
-                                const matchesSearch = text.includes(term);
-                                const matchesRole = !role || roleText.includes(role);
-                                const matchesStatus = !status || statusText.includes(status);
-
-                                row.style.display = (matchesSearch && matchesRole && matchesStatus) ? '' : 'none';
-                            });
-                        }
-
-                        searchInput.addEventListener('input', filterTable);
-                        roleFilter.addEventListener('change', filterTable);
-                        statusFilter.addEventListener('change', filterTable);
-                    </script>
 
                 </body>
 
