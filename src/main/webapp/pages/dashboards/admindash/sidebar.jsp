@@ -54,19 +54,6 @@
                             </a>
                         </li>
                         <li>
-                            <a href="${pageContext.request.contextPath}/admin/flagged-guides" id="nav-flagged-guides">
-                                <i class="ph ph-flag"></i>
-                                Flagged Guides
-                            </a>
-                        </li>
-                        <li>
-                            <a href="${pageContext.request.contextPath}/pages/dashboards/admindash/diagnostic-trees.jsp"
-                                id="nav-diagnostic">
-                                <i class="ph ph-tree-structure"></i>
-                                Diagnostic Trees
-                            </a>
-                        </li>
-                        <li>
                             <a href="${pageContext.request.contextPath}/admin/volunteer-requests"
                                 id="nav-volunteer-requests">
                                 <i class="ph ph-hand-heart"></i>
@@ -92,34 +79,6 @@
                                 id="nav-delivery-rates">
                                 <i class="ph ph-truck"></i>
                                 Delivery Rates
-                            </a>
-                        </li>
-                        <li>
-                            <a href="${pageContext.request.contextPath}/admin/refunds"
-                                id="nav-refunds">
-                                <i class="ph ph-arrows-counter-clockwise"></i>
-                                Refund Management
-                            </a>
-                        </li>
-                        <li>
-                            <a href="${pageContext.request.contextPath}/admin/driver-incidents"
-                                id="nav-driver-incidents">
-                                <i class="ph ph-warning-circle"></i>
-                                Driver Incidents
-                            </a>
-                        </li>
-                        <li>
-                            <a href="${pageContext.request.contextPath}/admin/technician-penalties"
-                                id="nav-technician-penalties">
-                                <i class="ph ph-shield-warning"></i>
-                                Technician Penalties
-                            </a>
-                        </li>
-                        <li>
-                            <a href="${pageContext.request.contextPath}/admin/client-penalties"
-                                id="nav-client-penalties">
-                                <i class="ph ph-user-minus"></i>
-                                Client Penalties
                             </a>
                         </li>
                         <li>

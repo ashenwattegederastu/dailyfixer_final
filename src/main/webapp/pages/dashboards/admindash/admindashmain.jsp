@@ -191,10 +191,6 @@
                 <div class="kpi-value">${totalGuides}</div>
                 <div class="kpi-label">Guides</div>
             </div>
-            <div class="kpi-card">
-                <div class="kpi-value">${totalDiagnosticTrees}</div>
-                <div class="kpi-label">Diagnostic Trees</div>
-            </div>
         </div>
 
         <!-- ════════ Action-Needed Cards ════════ -->
@@ -214,13 +210,6 @@
                         <div class="label">Volunteer Requests</div>
                     </div>
                     <a class="go-link" href="${pageContext.request.contextPath}/admin/volunteer-requests">Review</a>
-                </div>
-                <div class="action-card">
-                    <div class="info">
-                        <div class="count">${flaggedGuides}</div>
-                        <div class="label">Flagged Guides</div>
-                    </div>
-                    <a class="go-link" href="${pageContext.request.contextPath}/admin/flagged-guides">Moderate</a>
                 </div>
             </div>
         </div>

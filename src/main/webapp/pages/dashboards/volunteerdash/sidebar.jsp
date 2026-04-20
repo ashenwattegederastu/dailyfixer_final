@@ -63,13 +63,6 @@
                             </a>
                         </li>
                         <li>
-                            <a href="${pageContext.request.contextPath}/pages/dashboards/volunteerdash/diagnostic-trees.jsp"
-                                id="nav-diagnostic-trees">
-                                <i class="ph ph-tree-structure"></i>
-                                Diagnostic Trees
-                            </a>
-                        </li>
-                        <li>
                             <a href="${pageContext.request.contextPath}/pages/dashboards/volunteerdash/myProfile.jsp"
                                 id="nav-profile">
                                 <i class="ph ph-user"></i>
