@@ -67,6 +67,7 @@ public class AdminDriverReviewServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/pages/authentication/login.jsp");
             return;
         }
+
         User user = (User) session.getAttribute("currentUser");
         if (user == null || !"admin".equalsIgnoreCase(user.getRole())) {
             resp.sendRedirect(req.getContextPath() + "/pages/authentication/login.jsp");
